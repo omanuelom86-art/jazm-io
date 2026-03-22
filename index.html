@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jazm.io - CRM Inteligente</title>
+    <script type="module" crossorigin src="/assets/index-Bc6IvWS4.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DrcM231M.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function() {
+        const checkPage = () => {
+          // --- Inyección de QR en WhatsApp Setup ---
+          if (window.location.pathname.includes('/whatsapp-setup')) {
+            let container = document.querySelector('.whatsapp-evolution-qr-container');
+            if (!container) {
+              const target = document.querySelector('div.bg-white.rounded-2xl.shadow-2xl') || document.body;
+              container = document.createElement('div');
+              container.className = 'whatsapp-evolution-qr-container mt-8 p-6 bg-white rounded-2xl shadow-xl border border-indigo-100';
+              container.innerHTML = `
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <span class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs">QR</span>
+                  Conectar con Evolution API (Agente Comercial)
+                </h3>
+                <p class="text-sm text-gray-500 mb-4">Esta sección permite conectar tu WhatsApp a la infraestructura de agentes IA multitenant.</p>
+                <div class="flex flex-col md:flex-row gap-6 items-center">
+                  <div class="w-full md:w-1/2 border-2 border-dashed border-gray-200 rounded-xl p-4 flex items-center justify-center bg-gray-50 min-h-[300px]">
+                    <iframe id="evolution-iframe" src="/manager/" class="w-full h-[500px] border-none rounded-lg shadow-inner"></iframe>
+                  </div>
+                  <div class="w-full md:w-1/2 space-y-4">
+                    <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                      <h4 class="font-bold text-indigo-900 text-sm mb-2">Instrucciones de Agente IA:</h4>
+                      <ol class="text-xs text-indigo-800 space-y-2 list-decimal pl-4">
+                        <li>Inicia sesión con la API Key: <strong>Supera</strong>.</li>
+                        <li>Crea una instancia para tu empresa.</li>
+                        <li>Haz clic en "Connect" para ver el código QR.</li>
+                        <li>Una vez conectado, el Agente IA Kommo-style podrá responder por ti.</li>
+                      </ol>
+                    </div>
+                    <button onclick="document.getElementById('evolution-iframe').src='/manager/'" class="block w-full py-3 px-4 bg-green-600 text-white text-center rounded-xl font-bold hover:bg-green-700 transition-colors shadow-lg shadow-green-200">
+                      Recargar Panel de Conexión
+                    </button>
+                    <a href="/manager/" target="_blank" class="block w-full py-3 px-4 bg-indigo-600 text-white text-center rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                      Abrir Manager en pantalla completa
+                    </a>
+                  </div>
+                </div>
+              `;
+              if (target === document.body) {
+                 target.appendChild(container);
+              } else {
+                 target.parentElement.appendChild(container);
+              }
+            }
+          }
+
+          // --- Inyección de Estado Real en el Widget de Servidor ---
+          const updateServerWidget = async () => {
+            // Buscar elementos que contengan el texto de Oracle
+            const allElements = document.querySelectorAll('*');
+            for (const el of allElements) {
+              if (el.children.length === 0 && el.innerText && el.innerText.includes('Oracle ARM Ampere')) {
+                try {
+                  const r = await fetch('/api/status');
+                  const d = await r.json();
+                  
+                  // Cambiar el nombre del servidor y specs
+                  el.innerText = d.server;
+                  
+                  // Buscar el elemento de specs/salud que suele estar cerca
+                  const parent = el.parentElement;
+                  if (parent) {
+                    const specsEl = parent.querySelector('div.text-xs') || parent.querySelector('p.text-gray-500');
+                    if (specsEl) {
+                      specsEl.innerText = `${d.specs} — SALUD ${d.health}%`;
+                    }
+                    
+                    // Cambiar color del puntito si existe
+                    const dot = parent.querySelector('span.bg-green-500') || parent.querySelector('div.bg-green-500');
+                    if (dot) {
+                      dot.className = d.health > 80 ? dot.className.replace('bg-red-500', 'bg-green-500') : dot.className.replace('bg-green-500', 'bg-red-500');
+                    }
+                  }
+                } catch (e) {
+                  console.error('Error actualizando widget de servidor:', e);
+                }
+                break; // Solo actualizar el primero que encuentre
+              }
+            }
+          };
+          updateServerWidget();
+        };
+        setInterval(checkPage, 5000);
+        checkPage();
+      })();
+    </script>
+  </body>
+</html>
