@@ -33,6 +33,9 @@ def force_setup():
         email = "omanuelom86@gmail.com"
         password = "Nexus1234" 
         
+        log_msg("Limpiando duplicados previos...")
+        cur.execute("DELETE FROM auth.users WHERE LOWER(email) = LOWER(%s) AND id NOT IN (SELECT id FROM auth.users WHERE LOWER(email) = LOWER(%s) ORDER BY created_at ASC LIMIT 1)", (email, email))
+        
         log_msg("Verificando extensiones...")
         cur.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto;")
         

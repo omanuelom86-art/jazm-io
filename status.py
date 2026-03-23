@@ -223,36 +223,39 @@ async def status_dashboard():
     </script>
 </body>
 </html>'''
+import os
+import subprocess
+import requests
+from datetime import datetime
+from fastapi import FastAPI
+import psycopg2
+import socket
 
-@app.get("/api/status")
-async def api_status():
-    services = {
-        "redis": test_cmd(["redis-cli", "ping"], "PONG"),
-        "supabase": test_db(),
-        "crm": test_url("http://127.0.0.1:7860/"),
-        "evolution_api": test_url("http://127.0.0.1:8080/health"),
-        "manager": test_url("http://127.0.0.1:7860/manager/"),
-        "n8n": test_url("http://127.0.0.1:5678/healthz"),
-        "nginx": test_url("http://127.0.0.1:7860/")
+app = FastAPI()
+
+DATABASE_URL = "postgresql://postgres.htabdguydyysolkzdilm:%2AMm0101mM%2A%2A%2A%2A@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
+
+@app.get("/api/logs")
+def get_logs():
+    log_files = {
+        "n8n_err": "/tmp/n8n.err",
+        "n8n_out": "/tmp/n8n.log",
+        "reset_login": "/tmp/reset-login.log",
+        "reset_login_err": "/tmp/reset-login.err",
+        "nginx_err": "/tmp/nginx.err",
+        "evolution_err": "/tmp/evolution.err"
     }
-    
     logs = {}
-    service_log_paths = {
-        "n8n": "/tmp/n8n.log",
-        "evolution": "/tmp/evolution.log",
-        "nginx": "/tmp/nginx.log",
-        "status": "/tmp/status.log"
-    }
-    
-    for service, path in service_log_paths.items():
+    for name, path in log_files.items():
         try:
             if os.path.exists(path):
-                res = subprocess.run(["tail", "-n", "40", path], capture_output=True, text=True)
-                logs[service] = res.stdout.splitlines() if res.stdout else ["Log exists but is empty."]
+                with open(path, "r") as f:
+                    # Last 50 lines
+                    lines = f.readlines()
+                    logs[name] = "".join(lines[-50:])
             else:
-                logs[service] = [f"Log not found: {path}"]
+                logs[name] = f"Log file {path} not found."
         except Exception as e:
-            logs[service] = [f"Err: {str(e)}"]
 
     return {
         "services": services,
