@@ -1,4 +1,4 @@
-# FORCE SYNC: 2026-03-22T16:15:00
+# FORCE REBUILD: 2026-03-22T20:00:00 (v3.5)
 # REBUILD TRIGGER
 
 FROM atendai/evolution-api:latest
