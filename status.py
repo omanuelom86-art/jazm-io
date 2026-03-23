@@ -258,7 +258,7 @@ async def api_status():
         "services": services,
         "logs": logs,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3"
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.1"
     }
 
 def test_cmd(cmd, expected):
@@ -275,8 +275,7 @@ def test_url(url):
 
 def test_db():
     try:
-        # DB URI sanitized
-        uri = "postgresql://postgres.htabdguydyysolkzdilm:Mm0101mM****@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
+        uri = "postgresql://postgres.htabdguydyysolkzdilm:*Mm0101mM****@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
         import psycopg2
         conn = psycopg2.connect(uri, connect_timeout=3)
         conn.close()
