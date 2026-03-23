@@ -258,7 +258,7 @@ async def api_status():
         "services": services,
         "logs": logs,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "AUDIT-FIX-2026-03-22-18-00-DASHBOARD-FIX"
+        "version_tag": "AUDIT-FIX-2026-03-22-18-20-ROOT-FIX"
     }
 
 def test_cmd(cmd, expected):
@@ -286,4 +286,3 @@ def test_db():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
-p, host="0.0.0.0", port=8001)
