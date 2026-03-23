@@ -258,7 +258,7 @@ async def api_status():
         "services": services,
         "logs": logs,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.1"
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.2"
     }
 
 def test_cmd(cmd, expected):
@@ -269,13 +269,17 @@ def test_cmd(cmd, expected):
 
 def test_url(url):
     try:
+        # Intentar con la URL original
         r = requests.get(url, timeout=3, allow_redirects=True)
-        return r.status_code in [200, 401]
+        if r.status_code in [200, 401, 404]: # Incluso 404 significa que el proceso está vivo
+            return True
+        return False
     except: return False
 
 def test_db():
     try:
-        uri = "postgresql://postgres.htabdguydyysolkzdilm:*Mm0101mM****@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
+        # Usamos el password con URL Encoding para evitar problemas de parsing (* = %2A)
+        uri = "postgresql://postgres.htabdguydyysolkzdilm:%2AMm0101mM%2A%2A%2A%2A@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
         import psycopg2
         conn = psycopg2.connect(uri, connect_timeout=3)
         conn.close()
