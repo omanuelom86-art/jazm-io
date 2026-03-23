@@ -11,10 +11,9 @@ from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
-# Forzar carga de variables desde .env
 load_dotenv()
 
-app = FastAPI(title="Jazmio Nexus Diagnostic V3.9.2")
+app = FastAPI(title="Jazmio Nexus Diagnostic V3.10")
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,8 +23,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Limpiar URL de base de datos de posibles comillas del .env
+# Hugging Face PORT
+PORT = int(os.getenv("PORT", 7860))
+
+# Limpiar URL de base de datos
 DATABASE_URL = os.getenv("DATABASE_CONNECTION_URI") or os.getenv("DATABASE_URL")
+if DATABASE_URL and "?" in DATABASE_URL:
+    DATABASE_URL = DATABASE_URL.split("?")[0]
 if DATABASE_URL:
     DATABASE_URL = DATABASE_URL.strip('"').strip("'")
 
@@ -39,7 +43,8 @@ def test_tcp(host, port):
 def test_sql():
     if not DATABASE_URL: return False
     try:
-        conn = psycopg2.connect(DATABASE_URL, connect_timeout=3)
+        # Usamos PGOPTIONS para el search_path en lugar de la URL
+        conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=evolution_api,public")
         cur = conn.cursor()
         cur.execute("SELECT 1")
         cur.close()
@@ -60,11 +65,11 @@ def api_status():
     results = {
         "redis": test_tcp("127.0.0.1", 6379),
         "supabase": test_sql(),
-        "crm": test_url("http://127.0.0.1:80/index.html"),
+        "crm": test_url(f"http://127.0.0.1:{PORT}/index.html"),
         "evolution_api": test_url("http://127.0.0.1:8080/health"),
-        "manager": test_url("http://127.0.0.1:80/manager/"),
+        "manager": test_url(f"http://127.0.0.1:{PORT}/manager/index.html"),
         "n8n": test_url("http://127.0.0.1:5678/healthz"),
-        "nginx": test_tcp("127.0.0.1", 80)
+        "nginx": test_tcp("127.0.0.1", PORT)
     }
     
     log_files = {
@@ -91,7 +96,7 @@ def api_status():
     db_users = []
     if DATABASE_URL:
         try:
-            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3)
+            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=evolution_api,public")
             cur = conn.cursor()
             cur.execute("SELECT id, email, created_at FROM auth.users LIMIT 5")
             rows = cur.fetchall()
@@ -108,7 +113,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.9.2"
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.10"
     }
 
 @app.get("/", response_class=HTMLResponse)
@@ -130,7 +135,7 @@ async def status_dashboard():
         .badge-ok { background: #065f46; color: #34d399; }
         .badge-err { background: #7f1d1d; color: #f87171; }
         .log-section { width: 100%; margin-top: 30px; }
-        .log-tabs { display: flex; gap: 5px; margin-bottom: 5px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .log-tabs { display: flex; gap: 5px; margin-bottom: 5px; overflow-x: auto; }
         .log-tab { padding: 8px 12px; background: #161e2b; border: 1px solid #1e293b; cursor: pointer; font-size: 12px; white-space: nowrap; }
         .log-tab.active { background: #1e293b; color: #00d4aa; border-color: #00d4aa; }
         .log-content { background: #070a0f; color: #10b981; font-family: monospace; font-size: 11px; padding: 15px; border-radius: 8px; height: 350px; overflow-y: auto; white-space: pre-wrap; display: none; }
@@ -142,8 +147,8 @@ async def status_dashboard():
 </head>
 <body>
     <div class="container">
-        <h1>🚀 JAZMIO NEXUS V3.9.2</h1>
-        <div id="status-grid" class="grid">Conectando con la API...</div>
+        <h1>🚀 JAZMIO NEXUS V3.10</h1>
+        <div id="status-grid" class="grid">Conectando...</div>
         
         <div class="log-section">
             <h3 style="color: #00d4aa;">📄 TERMINAL DE DIAGNÓSTICO</h3>
@@ -152,13 +157,13 @@ async def status_dashboard():
         </div>
 
         <div class="log-section">
-            <h3 style="color: #00d4aa;">👥 ESTADO DE USUARIOS (SUPABASE)</h3>
+            <h3 style="color: #00d4aa;">👥 USUARIOS (SUPABASE AUTH)</h3>
             <div id="user-view"></div>
         </div>
 
-        <div style="margin-top: 30px; text-align: center; font-size: 12px; opacity: 0.6; border-top: 1px solid #1e293b; padding-top: 20px;">
+        <div style="margin-top: 30px; text-align: center; font-size: 12px; opacity: 0.6;">
             VERSIÓN: <span id="vtag" style="color: #00d4aa;">---</span> | 
-            HORA SERVIDOR: <span id="stime" style="color: #00d4aa;">---</span>
+            TIEMPO: <span id="stime" style="color: #00d4aa;">---</span>
         </div>
     </div>
 
@@ -167,61 +172,38 @@ async def status_dashboard():
         async function update() {
             try {
                 const r = await fetch('/api/status');
-                if (!r.ok) throw new Error("API Offline");
                 const d = await r.json();
                 
-                // Servicios
                 document.getElementById('status-grid').innerHTML = Object.entries(d.services).map(([k, ok]) => `
                     <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items: center;">
-                            <span style="font-weight: bold; color: #94a3b8;">${k.toUpperCase()}</span>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <b>${k.toUpperCase()}</b>
                             <span class="badge ${ok?'badge-ok':'badge-err'}">${ok?'ONLINE':'ERROR'}</span>
                         </div>
-                        <div style="font-size: 12px; margin-top: 8px; opacity: 0.7;">${ok ? 'Operativo' : 'Fallo de conexión'}</div>
                     </div>
                 `).join('');
 
-                // Logs Tabs & Contents
                 const logKeys = Object.keys(d.logs);
-                if (!logKeys.includes(currentTab)) currentTab = logKeys[0];
-
                 document.getElementById('log-tabs').innerHTML = logKeys.map(k => `
                     <div class="log-tab ${k===currentTab?'active':''}" onclick="currentTab='${k}';update();">${k.toUpperCase()}</div>
                 `).join('');
-                
                 document.getElementById('log-contents').innerHTML = logKeys.map(k => `
                     <div class="log-content ${k===currentTab?'active':''}">${d.logs[k].join('\\n').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
                 `).join('');
 
-                // Usuarios
-                const userView = document.getElementById('user-view');
-                if (d.db_users && d.db_users.length > 0 && !d.db_users[0].error) {
-                    userView.innerHTML = `
-                        <table>
-                            <thead><tr><th>ID</th><th>Email</th><th>Creado el</th></tr></thead>
-                            <tbody>${d.db_users.map(u => `<tr><td>${u.id}</td><td>${u.email}</td><td>${u.created}</td></tr>`).join('')}</tbody>
-                        </table>
-                    `;
-                } else if (d.db_users && d.db_users[0] && d.db_users[0].error) {
-                    userView.innerHTML = `<div style="color: #f87171; padding: 10px; background: rgba(248,113,113,0.1); border-radius: 8px;">Error de DB: ${d.db_users[0].error}</div>`;
-                } else {
-                    userView.innerHTML = `<div style="opacity: 0.5;">No se encontraron usuarios o la DB no respondió.</div>`;
-                }
-
+                document.getElementById('user-view').innerHTML = `
+                    <table>
+                        <tr><th>ID</th><th>Email</th><th>Created</th></tr>
+                        ${d.db_users.map(u => u.error ? `<tr><td colspan="3">${u.error}</td></tr>` : `<tr><td>${u.id}</td><td>${u.email}</td><td>${u.created}</td></tr>`).join('')}
+                    </table>
+                `;
                 document.getElementById('vtag').innerText = d.version_tag;
                 document.getElementById('stime').innerText = d.timestamp;
-
-                // Auto-scroll log
                 const activeEl = document.querySelector('.log-content.active');
                 if (activeEl) activeEl.scrollTop = activeEl.scrollHeight;
-
-            } catch(e) { 
-                console.error(e);
-                document.getElementById('status-grid').innerHTML = `<div style="color: #f87171; width: 100%; text-align: center;">Error de comunicación con el servidor (API offline)</div>`;
-            }
+            } catch(e) {}
         }
-        setInterval(update, 10000); 
-        update();
+        setInterval(update, 10000); update();
     </script>
 </body>
 </html>'''
