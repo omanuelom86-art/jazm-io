@@ -31,7 +31,7 @@ def force_setup():
         cur = conn.cursor()
         
         email = "omanuelom86@gmail.com"
-        password = "Nexus2026*" 
+        password = "Nexus1234" 
         
         log_msg("Verificando extensiones...")
         cur.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto;")
