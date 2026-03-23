@@ -258,7 +258,7 @@ async def api_status():
         "services": services,
         "logs": logs,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "AUDIT-FIX-2026-03-22-18-20-ROOT-FIX"
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3"
     }
 
 def test_cmd(cmd, expected):
