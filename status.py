@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="Jazmio Nexus Diagnostic V3.10")
+app = FastAPI(title="Jazmio Nexus Diagnostic V3.11")
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Hugging Face PORT
 PORT = int(os.getenv("PORT", 7860))
 
 # Limpiar URL de base de datos
@@ -43,20 +42,12 @@ def test_tcp(host, port):
 def test_sql():
     if not DATABASE_URL: return False
     try:
-        # Usamos PGOPTIONS para el search_path en lugar de la URL
         conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=evolution_api,public")
         cur = conn.cursor()
         cur.execute("SELECT 1")
         cur.close()
         conn.close()
         return True
-    except:
-        return False
-
-def test_url(url):
-    try:
-        r = requests.get(url, timeout=3, allow_redirects=True)
-        return r.status_code in [200, 401, 404]
     except:
         return False
 
@@ -67,17 +58,13 @@ def api_status():
         "supabase": test_sql(),
         "crm": test_url(f"http://127.0.0.1:{PORT}/index.html"),
         "evolution_api": test_url("http://127.0.0.1:8080/health"),
-        "manager": test_url(f"http://127.0.0.1:{PORT}/manager/index.html"),
         "n8n": test_url("http://127.0.0.1:5678/healthz"),
         "nginx": test_tcp("127.0.0.1", PORT)
     }
     
     log_files = {
         "n8n_err": "/tmp/n8n.err",
-        "n8n_out": "/tmp/n8n.log",
         "reset_login": "/tmp/reset-login.log",
-        "reset_login_err": "/tmp/reset-login.err",
-        "nginx_err": "/tmp/nginx.err",
         "evolution_err": "/tmp/evolution.err"
     }
     
@@ -86,35 +73,55 @@ def api_status():
         try:
             if os.path.exists(path):
                 with open(path, "r") as f:
-                    lines = f.readlines()
-                    logs[name] = [l.strip() for l in lines[-50:]]
+                    logs[name] = [l.strip() for l in f.readlines()[-50:]]
             else:
                 logs[name] = [f"Log {path} no encontrado."]
         except Exception as e:
-            logs[name] = [f"Error al leer log: {e}"]
+            logs[name] = [f"Error: {e}"]
 
+    # --- TELEMETRÍA DE AUDITORÍA AUTH ---
+    audit_logs = []
     db_users = []
     if DATABASE_URL:
         try:
-            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=evolution_api,public")
+            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=auth,public")
             cur = conn.cursor()
-            cur.execute("SELECT id, email, created_at FROM auth.users LIMIT 5")
-            rows = cur.fetchall()
-            db_users = [{"id": str(r[0]), "email": r[1], "created": str(r[2])} for r in rows]
+            # Auditoría de Auth (donde se ven fallos de login)
+            cur.execute("""
+                SELECT created_at, ip_address, payload 
+                FROM auth.audit_log 
+                ORDER BY created_at DESC LIMIT 15
+            """)
+            audit_rows = cur.fetchall()
+            audit_logs = [f"[{r[0]}] IP: {r[1]} - Event: {r[2].get('name', 'unknown')} - Message: {r[2].get('error', 'Success')}" for r in audit_rows]
+            
+            # Usuarios
+            cur.execute("SELECT id, email, created_at FROM auth.users ORDER BY created_at DESC LIMIT 5")
+            u_rows = cur.fetchall()
+            db_users = [{"id": str(r[0]), "email": r[1], "created": str(r[2])} for r in u_rows]
+            
             cur.close()
             conn.close()
         except Exception as e:
+            audit_logs = [f"Error de Auditoría: {e}"]
             db_users = [{"error": str(e)}]
-    else:
-        db_users = [{"error": "DATABASE_URL no configurada en .env"}]
+    
+    logs["AUTH_AUDIT"] = audit_logs
 
     return {
         "services": results,
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.10"
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.11"
     }
+
+def test_url(url):
+    try:
+        r = requests.get(url, timeout=3, allow_redirects=True)
+        return r.status_code in [200, 401, 404]
+    except:
+        return False
 
 @app.get("/", response_class=HTMLResponse)
 @app.get("/status", response_class=HTMLResponse)
@@ -122,7 +129,7 @@ async def status_dashboard():
     return '''<!DOCTYPE html>
 <html>
 <head>
-    <title>Jazmio Nexus - Estado</title>
+    <title>Jazmio Nexus - Estado v3.11</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -135,40 +142,38 @@ async def status_dashboard():
         .badge-ok { background: #065f46; color: #34d399; }
         .badge-err { background: #7f1d1d; color: #f87171; }
         .log-section { width: 100%; margin-top: 30px; }
-        .log-tabs { display: flex; gap: 5px; margin-bottom: 5px; overflow-x: auto; }
-        .log-tab { padding: 8px 12px; background: #161e2b; border: 1px solid #1e293b; cursor: pointer; font-size: 12px; white-space: nowrap; }
+        .log-tabs { display: flex; gap: 5px; margin-bottom: 5px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .log-tab { padding: 8px 12px; background: #161e2b; border: 1px solid #1e293b; cursor: pointer; font-size: 10px; white-space: nowrap; }
         .log-tab.active { background: #1e293b; color: #00d4aa; border-color: #00d4aa; }
         .log-content { background: #070a0f; color: #10b981; font-family: monospace; font-size: 11px; padding: 15px; border-radius: 8px; height: 350px; overflow-y: auto; white-space: pre-wrap; display: none; }
         .log-content.active { display: block; }
         table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #94a3b8; }
         th, td { border: 1px solid #1e293b; padding: 8px; text-align: left; }
-        th { color: #00d4aa; background: #1e293b; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 JAZMIO NEXUS V3.10</h1>
+        <h1>🚀 JAZMIO NEXUS V3.11</h1>
         <div id="status-grid" class="grid">Conectando...</div>
         
         <div class="log-section">
-            <h3 style="color: #00d4aa;">📄 TERMINAL DE DIAGNÓSTICO</h3>
+            <h3 style="color: #00d4aa;">📄 TELEMETRÍA DE AUDITORÍA (AUTH)</h3>
             <div id="log-tabs" class="log-tabs"></div>
             <div id="log-contents"></div>
         </div>
 
         <div class="log-section">
-            <h3 style="color: #00d4aa;">👥 USUARIOS (SUPABASE AUTH)</h3>
+            <h3 style="color: #00d4aa;">👥 ÚLTIMOS USUARIOS CREADOS</h3>
             <div id="user-view"></div>
         </div>
 
         <div style="margin-top: 30px; text-align: center; font-size: 12px; opacity: 0.6;">
-            VERSIÓN: <span id="vtag" style="color: #00d4aa;">---</span> | 
-            TIEMPO: <span id="stime" style="color: #00d4aa;">---</span>
+            VERSIÓN: <span id="vtag">---</span> | HORA: <span id="stime">---</span>
         </div>
     </div>
 
     <script>
-        let currentTab = 'n8n_err';
+        let currentTab = 'AUTH_AUDIT';
         async function update() {
             try {
                 const r = await fetch('/api/status');
@@ -191,12 +196,7 @@ async def status_dashboard():
                     <div class="log-content ${k===currentTab?'active':''}">${d.logs[k].join('\\n').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
                 `).join('');
 
-                document.getElementById('user-view').innerHTML = `
-                    <table>
-                        <tr><th>ID</th><th>Email</th><th>Created</th></tr>
-                        ${d.db_users.map(u => u.error ? `<tr><td colspan="3">${u.error}</td></tr>` : `<tr><td>${u.id}</td><td>${u.email}</td><td>${u.created}</td></tr>`).join('')}
-                    </table>
-                `;
+                document.getElementById('user-view').innerHTML = `<table><tr><th>Email</th><th>ID</th></tr>${d.db_users.map(u => `<tr><td>${u.email}</td><td>${u.id}</td></tr>`).join('')}</table>`;
                 document.getElementById('vtag').innerText = d.version_tag;
                 document.getElementById('stime').innerText = d.timestamp;
                 const activeEl = document.querySelector('.log-content.active');

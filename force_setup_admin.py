@@ -1,3 +1,4 @@
+
 import psycopg2
 import uuid
 import sys
@@ -14,18 +15,8 @@ if DB_URI and "?" in DB_URI:
 if not DB_URI:
     DB_URI = "postgresql://postgres.htabdguydyysolkzdilm:*Mm0101mM****@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
 
-LOG_FILE = "/opt/nexus/web/setup_db.log"
-
-def log_msg(msg):
-    print(msg)
-    try:
-        with open(LOG_FILE, "a") as f:
-            f.write(msg + "\n")
-    except:
-        pass
-
 def force_setup():
-    log_msg(f"--- INICIANDO CONFIGURACIÓN ---")
+    print(f"--- INICIANDO CONFIGURACIÓN v3.11 (AUDIT PLUS) ---")
     try:
         conn = psycopg2.connect(DB_URI)
         cur = conn.cursor()
@@ -33,63 +24,42 @@ def force_setup():
         email = "omanuelom86@gmail.com"
         password = "Nexus1234" 
         
-        log_msg("Limpiando duplicados previos...")
-        cur.execute("DELETE FROM auth.users WHERE LOWER(email) = LOWER(%s) AND id NOT IN (SELECT id FROM auth.users WHERE LOWER(email) = LOWER(%s) ORDER BY created_at ASC LIMIT 1)", (email, email))
+        print("Limpiando identidades y usuario previo...")
+        cur.execute("DELETE FROM auth.identities WHERE user_id IN (SELECT id FROM auth.users WHERE LOWER(email) = LOWER(%s))", (email,))
+        cur.execute("DELETE FROM auth.users WHERE LOWER(email) = LOWER(%s)", (email,))
         
-        log_msg("Verificando extensiones...")
-        cur.execute("CREATE EXTENSION IF NOT EXISTS pgcrypto;")
+        user_id = str(uuid.uuid4())
+        print(f"Creando usuario administrativo blindado: {user_id}")
         
-        cur.execute("SELECT id FROM auth.users WHERE LOWER(email) = LOWER(%s)", (email,))
-        row = cur.fetchone()
-        
-        if row:
-            user_id = row[0]
-            log_msg(f"Usuario {email} encontrado con ID: {user_id}. Actualizando password...")
-            sql_update = """
-            UPDATE auth.users SET 
-                encrypted_password = crypt(%s, gen_salt('bf')),
-                email_confirmed_at = NOW(),
-                last_sign_in_at = NOW(),
-                aud = 'authenticated',
-                role = 'authenticated',
-                updated_at = NOW(),
-                instance_id = '00000000-0000-0000-0000-000000000000'
-            WHERE id = %s
-            """
-            cur.execute(sql_update, (password, user_id))
-        else:
-            user_id = str(uuid.uuid4())
-            log_msg(f"Creando nuevo usuario {email} con ID: {user_id}...")
-            sql_insert_user = """
-            INSERT INTO auth.users (
-                id, instance_id, email, encrypted_password, email_confirmed_at, 
-                aud, role,
-                raw_app_meta_data, raw_user_meta_data, created_at, updated_at, 
-                is_super_admin, phone_confirmed_at
-            ) VALUES (
-                %s, '00000000-0000-0000-0000-000000000000', %s, 
-                crypt(%s, gen_salt('bf')), NOW(), 
-                'authenticated', 'authenticated',
-                '{"provider":"email","providers":["email"]}', '{"full_name":"Oscar Orozco"}', 
-                NOW(), NOW(), FALSE, NOW()
-            );
-            """
-            cur.execute(sql_insert_user, (user_id, email, password))
+        # Insertar con cost 10 y metadatos completos
+        sql_insert_user = """
+        INSERT INTO auth.users (
+            id, instance_id, email, encrypted_password, email_confirmed_at, confirmed_at,
+            aud, role,
+            raw_app_meta_data, raw_user_meta_data, created_at, updated_at, 
+            is_super_admin, phone_confirmed_at, last_sign_in_at
+        ) VALUES (
+            %s, '00000000-0000-0000-0000-000000000000', %s, 
+            crypt(%s, gen_salt('bf', 10)), NOW(), NOW(),
+            'authenticated', 'authenticated',
+            '{"provider":"email","providers":["email"]}', '{"full_name":"Oscar Orozco"}', 
+            NOW(), NOW(), FALSE, NOW(), NOW()
+        );
+        """
+        cur.execute(sql_insert_user, (user_id, email, password))
             
-        log_msg("Asegurando identidad del usuario...")
-        # identities_provider_id_provider_unique: UNIQUE (provider_id, provider)
+        print("Insertando identidad de acceso...")
         sql_identity = """
         INSERT INTO auth.identities (
             id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at
         ) VALUES (
             %s, %s, %s, %s, 'email', NOW(), NOW(), NOW()
-        ) ON CONFLICT (provider_id, provider) DO UPDATE SET last_sign_in_at = NOW(), updated_at = NOW();
+        );
         """
-        id_data = json.dumps({"sub": str(user_id), "email": email})
-        cur.execute(sql_identity, (str(uuid.uuid4()), user_id, str(user_id), id_data))
+        id_data = json.dumps({"sub": str(user_id), "email": email, "email_verified": True, "phone_verified": False})
+        cur.execute(sql_identity, (str(uuid.uuid4()), user_id, user_id, id_data))
 
-        log_msg("Asegurando perfil en public.profiles...")
-        # public.profiles: id, nombre_completo, avatar_url, rol, creado_at, actualizado_at
+        print("Asegurando perfil comercial en public.profiles...")
         cur.execute("""
             INSERT INTO public.profiles (id, nombre_completo, rol, actualizado_at)
             VALUES (%s, 'Oscar Orozco', 'admin', NOW())
@@ -97,12 +67,12 @@ def force_setup():
         """, (user_id,))
         
         conn.commit()
-        log_msg(f"✅ ¡CONFIGURACIÓN COMPLETADA!")
+        print(f"✅ ¡ADMIN v3.11 LISTO!")
         
         cur.close()
         conn.close()
     except Exception as e:
-        log_msg(f"❌ ERROR: {e}")
+        print(f"❌ ERROR EN SETUP: {e}")
         sys.exit(0)
 
 if __name__ == "__main__":
