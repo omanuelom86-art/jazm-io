@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="Jazmio Nexus Diagnostic V3.12")
+app = FastAPI(title="Jazmio Nexus Diagnostic V3.13")
 
 app.add_middleware(
     CORSMiddleware,
@@ -110,7 +110,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.12"
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.13"
     }
 
 def test_url(url):
@@ -126,7 +126,7 @@ async def status_dashboard():
     return '''<!DOCTYPE html>
 <html>
 <head>
-    <title>Jazmio Nexus - Estado v3.12</title>
+    <title>Jazmio Nexus - Estado v3.13</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -150,7 +150,7 @@ async def status_dashboard():
 </head>
 <body>
     <div class="container">
-        <h1>🚀 JAZMIO NEXUS V3.12</h1>
+        <h1>🚀 JAZMIO NEXUS V3.13</h1>
         <div id="status-grid" class="grid">Conectando...</div>
         
         <div class="log-section">
