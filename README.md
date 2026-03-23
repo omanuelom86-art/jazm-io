@@ -5,8 +5,8 @@ colorFrom: blue
 colorTo: indigo
 sdk: docker
 pinned: false
-app_version: "3.9"
-# FORCE REBUILD TRIGGER: 2026-03-23T08:20:00
+app_version: "3.9.1"
+# FORCE REBUILD TRIGGER: 2026-03-23T08:25:00
 ---
 
 # Nexus Server (Evolution API + Jazm.io Manager)
