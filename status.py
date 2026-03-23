@@ -1,12 +1,20 @@
+
+import os
+import subprocess
+import requests
+import json
+import socket
+import psycopg2
+from datetime import datetime
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-import os, requests, json, subprocess, sys
-from datetime import datetime
 from dotenv import load_dotenv
 
+# Forzar carga de variables desde .env
 load_dotenv()
-app = FastAPI(title="Jazmio Nexus - Estado")
+
+app = FastAPI(title="Jazmio Nexus Diagnostic V3.9.2")
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,6 +24,94 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Limpiar URL de base de datos de posibles comillas del .env
+DATABASE_URL = os.getenv("DATABASE_CONNECTION_URI") or os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    DATABASE_URL = DATABASE_URL.strip('"').strip("'")
+
+def test_tcp(host, port):
+    try:
+        with socket.create_connection((host, port), timeout=2):
+            return True
+    except:
+        return False
+
+def test_sql():
+    if not DATABASE_URL: return False
+    try:
+        conn = psycopg2.connect(DATABASE_URL, connect_timeout=3)
+        cur = conn.cursor()
+        cur.execute("SELECT 1")
+        cur.close()
+        conn.close()
+        return True
+    except:
+        return False
+
+def test_url(url):
+    try:
+        r = requests.get(url, timeout=3, allow_redirects=True)
+        return r.status_code in [200, 401, 404]
+    except:
+        return False
+
+@app.get("/api/status")
+def api_status():
+    results = {
+        "redis": test_tcp("127.0.0.1", 6379),
+        "supabase": test_sql(),
+        "crm": test_url("http://127.0.0.1:80/index.html"),
+        "evolution_api": test_url("http://127.0.0.1:8080/health"),
+        "manager": test_url("http://127.0.0.1:80/manager/"),
+        "n8n": test_url("http://127.0.0.1:5678/healthz"),
+        "nginx": test_tcp("127.0.0.1", 80)
+    }
+    
+    log_files = {
+        "n8n_err": "/tmp/n8n.err",
+        "n8n_out": "/tmp/n8n.log",
+        "reset_login": "/tmp/reset-login.log",
+        "reset_login_err": "/tmp/reset-login.err",
+        "nginx_err": "/tmp/nginx.err",
+        "evolution_err": "/tmp/evolution.err"
+    }
+    
+    logs = {}
+    for name, path in log_files.items():
+        try:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    lines = f.readlines()
+                    logs[name] = [l.strip() for l in lines[-50:]]
+            else:
+                logs[name] = [f"Log {path} no encontrado."]
+        except Exception as e:
+            logs[name] = [f"Error al leer log: {e}"]
+
+    db_users = []
+    if DATABASE_URL:
+        try:
+            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3)
+            cur = conn.cursor()
+            cur.execute("SELECT id, email, created_at FROM auth.users LIMIT 5")
+            rows = cur.fetchall()
+            db_users = [{"id": str(r[0]), "email": r[1], "created": str(r[2])} for r in rows]
+            cur.close()
+            conn.close()
+        except Exception as e:
+            db_users = [{"error": str(e)}]
+    else:
+        db_users = [{"error": "DATABASE_URL no configurada en .env"}]
+
+    return {
+        "services": results,
+        "logs": logs,
+        "db_users": db_users,
+        "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.9.2"
+    }
+
+@app.get("/", response_class=HTMLResponse)
 @app.get("/status", response_class=HTMLResponse)
 async def status_dashboard():
     return '''<!DOCTYPE html>
@@ -25,269 +121,110 @@ async def status_dashboard():
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #0b1118; color: #e1e1e1; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .container { width: 95%; max-width: 900px; margin-top: 40px; padding-bottom: 50px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; }
-        h1 { color: #00d4aa; margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
-        .clock { font-family: 'Courier New', monospace; font-size: 18px; color: #64748b; background: #161e2b; padding: 4px 12px; border-radius: 6px; border: 1px solid #1e293b; }
-        .server-status { padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .status-up { background: rgba(0, 212, 170, 0.08); color: #00d4aa; border: 1px solid rgba(0, 212, 170, 0.2); }
-        .status-down { background: rgba(239, 68, 68, 0.08); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); }
+        body { font-family: sans-serif; margin: 0; background: #0b1118; color: #e1e1e1; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 95%; max-width: 1000px; margin-top: 40px; padding-bottom: 40px; }
+        h1 { color: #00d4aa; text-align: center; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .card { background: #161e2b; padding: 16px; border-radius: 14px; border: 1px solid #1e293b; display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
-        .card:hover { transform: translateY(-3px); border-color: #00d4aa; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        .service-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .service-name { font-weight: 700; font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
-        .badge-ok { background: rgba(5, 150, 105, 0.15); color: #34d399; }
-        .badge-error { background: rgba(185, 28, 28, 0.15); color: #f87171; }
-        .preview-container { width: 100%; height: 160px; background: #070a0f; border-radius: 10px; border: 1px solid #1e293b; overflow: hidden; position: relative; margin-top: 10px; }
-        .iframe-wrap { width: 100%; height: 100%; }
-        .iframe-wrap iframe { width: 1000px; height: 600px; border: none; transform: scale(0.28); transform-origin: 0 0; }
-        .preview-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; z-index: 5; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; opacity: 0; }
-        .preview-container:hover .preview-overlay { background: rgba(0, 212, 170, 0.05); opacity: 1; }
-        .btn-view { background: #00d4aa; color: #0b1118; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; font-size: 11px; text-decoration: none; display: flex; align-items: center; gap: 5px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); }
-        .details { margin-top: auto; font-size: 11px; color: #64748b; font-family: monospace; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .detail-item { background: #0f172a; padding: 2px 6px; border-radius: 4px; }
-        .log-section { width: 100%; margin-top: 40px; }
-        .log-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: #00d4aa; font-weight: 800; font-size: 14px; }
-        .log-tabs { display: flex; gap: 5px; margin-bottom: 10px; }
-        .log-tab { padding: 6px 14px; background: #161e2b; border: 1px solid #1e293b; border-radius: 6px; font-size: 12px; cursor: pointer; color: #64748b; font-weight: 600; }
+        .card { background: #161e2b; padding: 16px; border-radius: 12px; border: 1px solid #1e293b; }
+        .badge { padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+        .badge-ok { background: #065f46; color: #34d399; }
+        .badge-err { background: #7f1d1d; color: #f87171; }
+        .log-section { width: 100%; margin-top: 30px; }
+        .log-tabs { display: flex; gap: 5px; margin-bottom: 5px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .log-tab { padding: 8px 12px; background: #161e2b; border: 1px solid #1e293b; cursor: pointer; font-size: 12px; white-space: nowrap; }
         .log-tab.active { background: #1e293b; color: #00d4aa; border-color: #00d4aa; }
-        .log-content { background: #070a0f; color: #10b981; font-family: 'Fira Code', 'Consolas', monospace; font-size: 11.5px; padding: 18px; border-radius: 10px; border: 1px solid #1e293b; height: 300px; overflow-y: auto; white-space: pre-wrap; display: none; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5); }
+        .log-content { background: #070a0f; color: #10b981; font-family: monospace; font-size: 11px; padding: 15px; border-radius: 8px; height: 350px; overflow-y: auto; white-space: pre-wrap; display: none; }
         .log-content.active { display: block; }
-        .footer { margin-top: 60px; padding: 30px; border-top: 1px solid #1e293b; text-align: center; color: #475569; }
-        .footer p { margin: 5px 0; font-size: 12px; }
-        .highlight { color: #00d4aa!important; font-weight: 700; }
-        .pulse { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 1.8s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.3); } 100% { opacity: 1; transform: scale(1); } }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #94a3b8; }
+        th, td { border: 1px solid #1e293b; padding: 8px; text-align: left; }
+        th { color: #00d4aa; background: #1e293b; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🚀 JAZMIO NEXUS V4</h1>
-            <div id="clock" class="clock">00:00:00</div>
-        </div>
+        <h1>🚀 JAZMIO NEXUS V3.9.2</h1>
+        <div id="status-grid" class="grid">Conectando con la API...</div>
         
-        <div id="status-summary">
-            <div id="server-indicator" class="server-status status-up">
-                <div class="pulse"></div>
-                <span>CONECTANDO...</span>
-            </div>
-        </div>
-
-        <div id="status-grid" class="grid">
-            <!-- Services will be injected here -->
-        </div>
-
         <div class="log-section">
-            <div class="log-header">
-                <span>📄 TERMINAL DE DIAGNÓSTICO</span>
-                <span style="font-size: 10px; color: #475569; font-weight: 400; margin-left: auto;">LOGS EN TIEMPO REAL</span>
-            </div>
+            <h3 style="color: #00d4aa;">📄 TERMINAL DE DIAGNÓSTICO</h3>
             <div id="log-tabs" class="log-tabs"></div>
             <div id="log-contents"></div>
         </div>
 
-        <div class="footer">
-            <p>SISTEMA: <span class="highlight">Nexus Server Architecture</span> | VERSIÓN: <span id="version-tag" class="highlight">---</span></p>
-            <p>LATENCIA DB: <span id="db-latency" class="highlight">---</span> | UPTIME HF: <span id="server-time" class="highlight">---</span></p>
-            <p style="margin-top: 15px; font-size: 11px; opacity: 0.6;">&copy; 2026 Jazmío.io - Optimización de IA y Automatización Omnicanal.</p>
+        <div class="log-section">
+            <h3 style="color: #00d4aa;">👥 ESTADO DE USUARIOS (SUPABASE)</h3>
+            <div id="user-view"></div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; font-size: 12px; opacity: 0.6; border-top: 1px solid #1e293b; padding-top: 20px;">
+            VERSIÓN: <span id="vtag" style="color: #00d4aa;">---</span> | 
+            HORA SERVIDOR: <span id="stime" style="color: #00d4aa;">---</span>
         </div>
     </div>
 
     <script>
-        // Actualizar reloj local
-        function updateClock() {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        const serviceMeta = {
-            "crm": { name: "Nexus Manager", label: "CRM INTERFACE", path: "/" },
-            "n8n": { name: "n8n Automation", label: "WORKFLOW ENGINE", path: "/n8n/login" },
-            "evolution_api": { name: "Evolution API", label: "WHATSAPP ENGINE", path: "/manager/" },
-            "manager": { name: "Evolution Manager", label: "INSTANCE CONTROL", path: "/manager/" },
-            "redis": { name: "Redis Cache", label: "LOCAL BROKER", path: "" },
-            "supabase": { name: "Supabase DB", label: "CLOUD DATABASE", path: "" },
-            "nginx": { name: "Nginx Gateway", label: "ENTRY PROXY", path: "" }
-        };
-
-        let currentActiveTab = null;
-
-        async function refreshData() {
+        let currentTab = 'n8n_err';
+        async function update() {
             try {
-                const res = await fetch('/api/status');
-                const data = await res.json();
+                const r = await fetch('/api/status');
+                if (!r.ok) throw new Error("API Offline");
+                const d = await r.json();
                 
-                const grid = document.getElementById('status-grid');
-                let gridHtml = '';
-                let anyError = false;
-
-                // Render Service Cards
-                Object.entries(data.services).forEach(([key, ok]) => {
-                    if (!ok) anyError = true;
-                    const meta = serviceMeta[key] || { name: key, label: "SERVICE", path: "" };
-                    
-                    gridHtml += `
-                        <div class="card">
-                            <div class="service-info">
-                                <span class="service-name">${meta.label}</span>
-                                <div class="status-badge ${ok ? 'badge-ok' : 'badge-error'}">
-                                    <div class="${ok ? 'pulse' : ''}"></div>
-                                    ${ok ? 'ONLINE' : 'ERROR'}
-                                </div>
-                            </div>
-                            <div style="font-size: 16px; font-weight: 800; color: #f8fafc; margin-bottom: 5px;">${meta.name}</div>
-                            ${meta.path ? `
-                                <div class="preview-container">
-                                    <div class="preview-overlay" onclick="window.open('${meta.path}', '_blank')">
-                                        <div class="btn-view">ABRIR SISTEMA ↗</div>
-                                    </div>
-                                    <div class="iframe-wrap">
-                                        <iframe src="${meta.path}" scrolling="no"></iframe>
-                                    </div>
-                                </div>
-                            ` : `
-                                <div style="height: 40px; display: flex; align-items: center; color: #475569; font-size: 11px; font-weight: 600;">
-                                    SERVICIO DE INFRAESTRUCTURA (SIN INTERFAZ)
-                                </div>
-                            `}
-                            <div class="details">
-                                <span class="detail-item">${ok ? 'CONFIRMADO' : 'FALLO'}</span>
-                                <span style="opacity: 0.5;">ID: ${key}</span>
-                            </div>
+                // Servicios
+                document.getElementById('status-grid').innerHTML = Object.entries(d.services).map(([k, ok]) => `
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items: center;">
+                            <span style="font-weight: bold; color: #94a3b8;">${k.toUpperCase()}</span>
+                            <span class="badge ${ok?'badge-ok':'badge-err'}">${ok?'ONLINE':'ERROR'}</span>
                         </div>
+                        <div style="font-size: 12px; margin-top: 8px; opacity: 0.7;">${ok ? 'Operativo' : 'Fallo de conexión'}</div>
+                    </div>
+                `).join('');
+
+                // Logs Tabs & Contents
+                const logKeys = Object.keys(d.logs);
+                if (!logKeys.includes(currentTab)) currentTab = logKeys[0];
+
+                document.getElementById('log-tabs').innerHTML = logKeys.map(k => `
+                    <div class="log-tab ${k===currentTab?'active':''}" onclick="currentTab='${k}';update();">${k.toUpperCase()}</div>
+                `).join('');
+                
+                document.getElementById('log-contents').innerHTML = logKeys.map(k => `
+                    <div class="log-content ${k===currentTab?'active':''}">${d.logs[k].join('\\n').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+                `).join('');
+
+                // Usuarios
+                const userView = document.getElementById('user-view');
+                if (d.db_users && d.db_users.length > 0 && !d.db_users[0].error) {
+                    userView.innerHTML = `
+                        <table>
+                            <thead><tr><th>ID</th><th>Email</th><th>Creado el</th></tr></thead>
+                            <tbody>${d.db_users.map(u => `<tr><td>${u.id}</td><td>${u.email}</td><td>${u.created}</td></tr>`).join('')}</tbody>
+                        </table>
                     `;
-                });
-                grid.innerHTML = gridHtml;
+                } else if (d.db_users && d.db_users[0] && d.db_users[0].error) {
+                    userView.innerHTML = `<div style="color: #f87171; padding: 10px; background: rgba(248,113,113,0.1); border-radius: 8px;">Error de DB: ${d.db_users[0].error}</div>`;
+                } else {
+                    userView.innerHTML = `<div style="opacity: 0.5;">No se encontraron usuarios o la DB no respondió.</div>`;
+                }
 
-                // Render Logs
-                const logTabs = document.getElementById('log-tabs');
-                const logContents = document.getElementById('log-contents');
-                let tabsHtml = '';
-                let contentsHtml = '';
-                
-                const services = Object.keys(data.logs);
-                if (!currentActiveTab && services.length > 0) currentActiveTab = services[0];
+                document.getElementById('vtag').innerText = d.version_tag;
+                document.getElementById('stime').innerText = d.timestamp;
 
-                services.forEach(svc => {
-                    const isActive = svc === currentActiveTab;
-                    tabsHtml += `<div class="log-tab ${isActive ? 'active' : ''}" onclick="switchTab('${svc}')">${svc.toUpperCase()}</div>`;
-                    const logTxt = data.logs[svc].join('\\n').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                    contentsHtml += `<div id="log-content-${svc}" class="log-content ${isActive ? 'active' : ''}">${logTxt}</div>`;
-                });
-                logTabs.innerHTML = tabsHtml;
-                logContents.innerHTML = contentsHtml;
-                
-                // Auto-scroll log activo
-                const activeLogEl = document.getElementById(`log-content-${currentActiveTab}`);
-                if (activeLogEl) activeLogEl.scrollTop = activeLogEl.scrollHeight;
+                // Auto-scroll log
+                const activeEl = document.querySelector('.log-content.active');
+                if (activeEl) activeEl.scrollTop = activeEl.scrollHeight;
 
-                // Global Status
-                const indicator = document.getElementById('server-indicator');
-                indicator.className = `server-status ${anyError ? 'status-down' : 'status-up'}`;
-                indicator.innerHTML = anyError ? '<div class="pulse"></div><span>SISTEMA CON ALERTAS AUNQUE OPERATIVO</span>' : '<div class="pulse"></div><span>SISTEMA 100% OPERATIVO Y CONECTADO</span>';
-                
-                // Labels
-                document.getElementById('version-tag').innerText = data.version_tag;
-                document.getElementById('server-time').innerText = data.timestamp;
-                document.getElementById('db-latency').innerText = data.services.supabase ? '< 150ms' : 'N/A';
-
-            } catch (e) {
+            } catch(e) { 
                 console.error(e);
-                document.getElementById('server-indicator').className = 'server-status status-down';
-                document.getElementById('server-indicator').innerHTML = '<div class="pulse"></div><span>FATAL: ERROR DE COMUNICACIÓN CON STATUS API</span>';
+                document.getElementById('status-grid').innerHTML = `<div style="color: #f87171; width: 100%; text-align: center;">Error de comunicación con el servidor (API offline)</div>`;
             }
         }
-
-        window.switchTab = (svc) => {
-            currentActiveTab = svc;
-            const tabs = document.querySelectorAll('.log-tab');
-            const contents = document.querySelectorAll('.log-content');
-            tabs.forEach(t => t.classList.remove('active'));
-            contents.forEach(c => c.classList.remove('active'));
-            
-            document.querySelectorAll('.log-tab').forEach(t => { if(t.innerText.toLowerCase() === svc) t.classList.add('active'); });
-            const contentEl = document.getElementById(`log-content-${svc}`);
-            if (contentEl) {
-                contentEl.classList.add('active');
-                contentEl.scrollTop = contentEl.scrollHeight;
-            }
-        };
-
-        refreshData();
-        setInterval(refreshData, 15000); // 15s refresh
+        setInterval(update, 10000); 
+        update();
     </script>
 </body>
 </html>'''
-import os
-import subprocess
-import requests
-from datetime import datetime
-from fastapi import FastAPI
-import psycopg2
-import socket
-
-app = FastAPI()
-
-DATABASE_URL = "postgresql://postgres.htabdguydyysolkzdilm:%2AMm0101mM%2A%2A%2A%2A@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
-
-@app.get("/api/logs")
-def get_logs():
-    log_files = {
-        "n8n_err": "/tmp/n8n.err",
-        "n8n_out": "/tmp/n8n.log",
-        "reset_login": "/tmp/reset-login.log",
-        "reset_login_err": "/tmp/reset-login.err",
-        "nginx_err": "/tmp/nginx.err",
-        "evolution_err": "/tmp/evolution.err"
-    }
-    logs = {}
-    for name, path in log_files.items():
-        try:
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    # Last 50 lines
-                    lines = f.readlines()
-                    logs[name] = "".join(lines[-50:])
-            else:
-                logs[name] = f"Log file {path} not found."
-        except Exception as e:
-
-    return {
-        "services": services,
-        "logs": logs,
-        "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.7.1"
-    }
-
-def test_cmd(cmd, expected):
-    try:
-        res = subprocess.run(cmd, capture_output=True, timeout=2)
-        return res.stdout.decode().strip().upper() == expected.upper()
-    except: return False
-
-def test_url(url):
-    try:
-        # Intentar con la URL original
-        r = requests.get(url, timeout=3, allow_redirects=True)
-        if r.status_code in [200, 401, 404]: # Incluso 404 significa que el proceso está vivo
-            return True
-        return False
-    except: return False
-
-def test_db():
-    try:
-        # Usamos el password con URL Encoding para evitar problemas de parsing (* = %2A)
-        uri = "postgresql://postgres.htabdguydyysolkzdilm:%2AMm0101mM%2A%2A%2A%2A@aws-0-us-west-2.pooler.supabase.com:5432/postgres"
-        import psycopg2
-        conn = psycopg2.connect(uri, connect_timeout=3)
-        conn.close()
-        return True
-    except: return False
 
 if __name__ == "__main__":
     import uvicorn
