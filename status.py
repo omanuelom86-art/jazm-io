@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="Jazmio Nexus Diagnostic V3.14")
+app = FastAPI(title="Jazmio Nexus Diagnostic V3.17-FINAL-FIX")
 
 app.add_middleware(
     CORSMiddleware,
@@ -100,8 +100,8 @@ def api_status():
             
             cur.close()
             conn.close()
-        except:
-            audit_logs = ["Error leyendo Auditoría"]
+        except Exception as e:
+            audit_logs = [f"Error leyendo Auditoría: {e}"]
     
     logs["AUTH_AUDIT"] = audit_logs
 
@@ -126,7 +126,7 @@ async def status_dashboard():
     return '''<!DOCTYPE html>
 <html>
 <head>
-    <title>Jazmio Nexus - Estado v3.14</title>
+    <title>Jazmio Nexus - Estado v3.17</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -150,7 +150,7 @@ async def status_dashboard():
 </head>
 <body>
     <div class="container">
-        <h1>🚀 JAZMIO NEXUS V3.14</h1>
+        <h1>🚀 JAZMIO NEXUS V3.17-FINAL-FIX</h1>
         <div id="status-grid" class="grid">Conectando...</div>
         
         <div class="log-section">
