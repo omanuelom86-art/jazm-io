@@ -110,7 +110,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.14"
+        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.17-FINAL-FIX"
     }
 
 def test_url(url):

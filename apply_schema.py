@@ -22,12 +22,12 @@ def apply_schema():
         print("Aplicando esquema Jazm.io (CRM y RBAC)...")
         cur.execute(sql)
         conn.commit()
-        print("✅ Esquema aplicado con éxito.")
+        print("OK: Esquema aplicado con exito.")
         
         cur.close()
         conn.close()
     except Exception as e:
-        print(f"❌ Error aplicando el esquema: {e}")
+        print(f"FAIL: Error aplicando el esquema: {e}")
 
 if __name__ == "__main__":
     apply_schema()

@@ -21,39 +21,92 @@
               container = document.createElement('div');
               container.className = 'whatsapp-evolution-qr-container mt-8 p-6 bg-white rounded-2xl shadow-xl border border-indigo-100';
               container.innerHTML = `
-                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <span class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs">QR</span>
-                  Conectar con Evolution API (Agente Comercial)
-                </h3>
-                <p class="text-sm text-gray-500 mb-4">Esta sección permite conectar tu WhatsApp a la infraestructura de agentes IA multitenant.</p>
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                  <div class="w-full md:w-1/2 border-2 border-dashed border-gray-200 rounded-xl p-4 flex items-center justify-center bg-gray-50 min-h-[300px]">
-                    <iframe id="evolution-iframe" src="/manager/" class="w-full h-[500px] border-none rounded-lg shadow-inner"></iframe>
-                  </div>
-                  <div class="w-full md:w-1/2 space-y-4">
-                    <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                      <h4 class="font-bold text-indigo-900 text-sm mb-2">Instrucciones de Agente IA:</h4>
-                      <ol class="text-xs text-indigo-800 space-y-2 list-decimal pl-4">
-                        <li>Inicia sesión con la API Key: <strong>Supera</strong>.</li>
-                        <li>Crea una instancia para tu empresa.</li>
-                        <li>Haz clic en "Connect" para ver el código QR.</li>
-                        <li>Una vez conectado, el Agente IA Kommo-style podrá responder por ti.</li>
-                      </ol>
+                <div class="flex border-b border-gray-200 mb-6">
+                  <button id="tab-manager" class="py-2 px-4 text-sm font-bold border-b-2 border-indigo-600 text-indigo-600">MANAGER</button>
+                  <button id="tab-qr" class="py-2 px-4 text-sm font-bold border-b-2 border-transparent text-gray-500 hover:text-indigo-600">CÓDIGO QR</button>
+                </div>
+
+                <div id="content-manager" class="block">
+                  <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs">EXE</span>
+                    Evolution Manager
+                  </h3>
+                  <div class="flex flex-col md:flex-row gap-6 items-center">
+                    <div class="w-full md:w-1/2 border-2 border-dashed border-gray-200 rounded-xl p-4 flex items-center justify-center bg-gray-50 min-h-[300px]">
+                      <iframe id="evolution-iframe" src="/manager/" class="w-full h-[500px] border-none rounded-lg shadow-inner"></iframe>
                     </div>
-                    <button onclick="document.getElementById('evolution-iframe').src='/manager/'" class="block w-full py-3 px-4 bg-green-600 text-white text-center rounded-xl font-bold hover:bg-green-700 transition-colors shadow-lg shadow-green-200">
-                      Recargar Panel de Conexión
-                    </button>
-                    <a href="/manager/" target="_blank" class="block w-full py-3 px-4 bg-indigo-600 text-white text-center rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
-                      Abrir Manager en pantalla completa
-                    </a>
+                    <div class="w-full md:w-1/2 space-y-4">
+                       <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                        <h4 class="font-bold text-indigo-900 text-sm mb-2">Instrucciones:</h4>
+                        <ol class="text-xs text-indigo-800 space-y-2 list-decimal pl-4">
+                          <li>Login API Key: <strong>Supera</strong></li>
+                          <li>Crea una instancia para tu empresa.</li>
+                          <li>Usa la pestaña <strong>CÓDIGO QR</strong> para escanear.</li>
+                        </ol>
+                      </div>
+                      <button onclick="document.getElementById('evolution-iframe').src='/manager/'" class="block w-full py-3 px-4 bg-green-600 text-white text-center rounded-xl font-bold hover:bg-green-700 transition-colors shadow-lg">
+                        Recargar Manager
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="content-qr" class="hidden text-center py-10">
+                  <h3 class="text-xl font-bold text-gray-800 mb-4">Escanea para conectar WhatsApp</h3>
+                  <div id="qr-display" class="mx-auto w-64 h-64 bg-gray-100 rounded-xl flex items-center justify-center border-2 border-indigo-500 relative overflow-hidden">
+                    <p class="text-gray-400 text-xs px-4">Esperando instancia... Crea una instancia en la pestaña Manager primero.</p>
+                  </div>
+                  <div class="mt-6 flex justify-center gap-4">
+                    <input id="instance-name" type="text" placeholder="Nombre de Instancia" class="px-4 py-2 border rounded-lg text-sm w-48" value="AgenteComercial">
+                    <button id="btn-show-qr" class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700">Ver QR</button>
                   </div>
                 </div>
               `;
+
               if (target === document.body) {
                  target.appendChild(container);
               } else {
-                 target.parentElement.appendChild(container);
+                 if (target.parentElement) target.parentElement.appendChild(container); else target.appendChild(container);
               }
+
+              // Logic for tabs and QR fetch
+              const tManager = container.querySelector('#tab-manager');
+              const tQr = container.querySelector('#tab-qr');
+              const cManager = container.querySelector('#content-manager');
+              const cQr = container.querySelector('#content-qr');
+              const qrDisplay = container.querySelector('#qr-display');
+              const btnShowQr = container.querySelector('#btn-show-qr');
+              const instInput = container.querySelector('#instance-name');
+
+              tManager.onclick = () => {
+                cManager.className = 'block'; cQr.className = 'hidden';
+                tManager.className = 'py-2 px-4 text-sm font-bold border-b-2 border-indigo-600 text-indigo-600';
+                tQr.className = 'py-2 px-4 text-sm font-bold border-b-2 border-transparent text-gray-500';
+              };
+
+              tQr.onclick = () => {
+                cManager.className = 'hidden'; cQr.className = 'block';
+                tQr.className = 'py-2 px-4 text-sm font-bold border-b-2 border-indigo-600 text-indigo-600';
+                tManager.className = 'py-2 px-4 text-sm font-bold border-b-2 border-transparent text-gray-500';
+              };
+
+              btnShowQr.onclick = async () => {
+                const inst = instInput.value;
+                qrDisplay.innerHTML = '<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>';
+                try {
+                  const r = await fetch(`/instance/connect/qrcode/${inst}`, {
+                    headers: { 'apikey': 'Supera' }
+                  });
+                  const d = await r.json();
+                  if (d.code) {
+                    qrDisplay.innerHTML = `<img src="${d.code}" class="w-full h-full object-contain p-2" />`;
+                  } else {
+                    qrDisplay.innerHTML = `<p class="text-red-500 text-xs px-4">Error: ${d.message || 'Instancia no encontrada'}</p>`;
+                  }
+                } catch (e) {
+                   qrDisplay.innerHTML = `<p class="text-red-500 text-xs">Error de conexión</p>`;
+                }
+              };
             }
           }
 

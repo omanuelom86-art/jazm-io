@@ -22,7 +22,7 @@ def force_setup():
         cur = conn.cursor()
         
         email = "omanuelom86@gmail.com"
-        password = "Nexus1234" 
+        password = "Nexus2026*" 
         
         print("Limpiando identidades y usuario previo...")
         cur.execute("DELETE FROM auth.identities WHERE user_id IN (SELECT id FROM auth.users WHERE LOWER(email) = LOWER(%s))", (email,))
@@ -34,13 +34,13 @@ def force_setup():
         # Insertar con cost 10 y metadatos completos
         sql_insert_user = """
         INSERT INTO auth.users (
-            id, instance_id, email, encrypted_password, email_confirmed_at, confirmed_at,
+            id, instance_id, email, encrypted_password, email_confirmed_at,
             aud, role,
             raw_app_meta_data, raw_user_meta_data, created_at, updated_at, 
             is_super_admin, phone_confirmed_at, last_sign_in_at
         ) VALUES (
             %s, '00000000-0000-0000-0000-000000000000', %s, 
-            crypt(%s, gen_salt('bf', 10)), NOW(), NOW(),
+            crypt(%s, gen_salt('bf', 10)), NOW(),
             'authenticated', 'authenticated',
             '{"provider":"email","providers":["email"]}', '{"full_name":"Oscar Orozco"}', 
             NOW(), NOW(), FALSE, NOW(), NOW()
@@ -67,12 +67,12 @@ def force_setup():
         """, (user_id,))
         
         conn.commit()
-        print(f"✅ ¡ADMIN v3.11 LISTO!")
+        print(f"OK: ADMIN v3.11 LISTO!")
         
         cur.close()
         conn.close()
     except Exception as e:
-        print(f"❌ ERROR EN SETUP: {e}")
+        print(f"ERROR EN SETUP: {e}")
         sys.exit(0)
 
 if __name__ == "__main__":
