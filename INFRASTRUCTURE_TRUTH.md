@@ -12,7 +12,7 @@ Para que el servidor funcione en **Hugging Face Spaces (HF)**, la conexión DEBE
 * **Usuario**: `postgres.htabdguydyysolkzdilm`
 * **Base de datos**: `postgres`
 * **Esquema de la API**: `evolution_api`
-* **URI Maestra**: `postgresql://postgres.htabdguydyysolkzdilm:*Mm0101mM****@aws-0-us-west-2.pooler.supabase.com:5432/postgres?schema=evolution_api`
+* **URI Maestra**: `postgresql://postgres.htabdguydyysolkzdilm:Mm0101mM*@aws-0-us-west-2.pooler.supabase.com:5432/postgres?schema=evolution_api`
 
 > [!IMPORTANT]
 > **Por qué Puerto 5432?**: El puerto 6543 (Transaction Pooler) a veces da problemas con la persistencia de Evolution API. El puerto 5432 (Session Pooler) es más estable y es el que Supabase marca como "IPv4 Compatible" en tus capturas.
@@ -44,6 +44,8 @@ Para evitar errores de "White Screen" en n8n y Evolution:
 
 * **Admin Email**: `omanuelom86@gmail.com`
 * **Admin Password**: `Nexus2026*`
+* **n8n User**: `omanuelom86@gmail.com`
+* **n8n Password**: `Mm0101mM*`
 * **Evolution API Key**: `Supera`
 * **Groq API Key**: `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`
 * **Apify Token**: `apify_api_W1ZZqkMpWGVYmFafu4qeCmthrGMp7I4vk3jr`
