@@ -2,6 +2,23 @@
 
 Este archivo registra la evolución del servidor Nexus y las decisiones críticas tomadas para evitar repetir errores.
 
+## 📅 24 de Marzo, 2026 - Nexus Repair: n8n Persistence & RLS Fix
+
+### 🚨 Acciones de emergencia
+
+1. **Migración n8n a Postgres**: Configuración de `n8n` en `supervisord.conf` para usar Supabase. Esto evita el reseteo de flujos al reiniciar.
+2. **Corrección de RLS**: Actualización de políticas en `public.profiles` para permitir acceso total al rol `admin`. Esto soluciona el "Database error querying schema".
+3. **Sincronización de Esquema**: Aplicación forzada de `fix_rls_and_n8n.sql` para asegurar la estructura de la base de datos.
+
+### 🛠️ Archivos Actualizados
+
+- `supervisord.conf`: Añadidas variables `DB_TYPE=postgresdb`, etc.
+- `schema_setup.sql`: Actualización de políticas RLS.
+- `PROJECT_LOG.md`: Este registro.
+
+---
+
+
 ## 📅 22 de Marzo, 2026 - Nexus Keepalive V4 (Self-Heal & DB Check)
 
 ### 🚨 Problemas Corregidos

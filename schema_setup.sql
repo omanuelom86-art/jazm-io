@@ -98,6 +98,30 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Habilitar RLS
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Eliminar políticas antiguas si existen
+DROP POLICY IF EXISTS "Admin Full Access" ON public.profiles;
+DROP POLICY IF EXISTS "Self View" ON public.profiles;
+
+-- Nueva política Admin: Puede ver y editar TODO si su propio rol es 'admin'
+CREATE POLICY "Admin Full Access" ON public.profiles
+    FOR ALL
+    USING (
+        (SELECT rol FROM public.profiles WHERE id = auth.uid()) = 'admin'
+    );
+
+-- Nueva política Self: Puede ver su propio perfil
+CREATE POLICY "Self View" ON public.profiles
+    FOR SELECT
+    USING (auth.uid() = id);
+
+-- Nueva política Self Update: Puede editar su propio perfil
+CREATE POLICY "Self Update" ON public.profiles
+    FOR UPDATE
+    USING (auth.uid() = id);
+
 -- 10. Configuraciones de API (n8n, Evolution, etc)
 CREATE TABLE IF NOT EXISTS public.api_configurations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
