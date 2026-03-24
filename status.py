@@ -88,7 +88,7 @@ def api_status():
             cur = conn.cursor()
             cur.execute("""
                 SELECT created_at, ip_address, payload 
-                FROM auth.audit_log 
+                FROM auth.audit_log_entries 
                 ORDER BY created_at DESC LIMIT 15
             """)
             audit_rows = cur.fetchall()
