@@ -72,8 +72,9 @@ def api_status():
     log_files = {
         "n8n_err": "/tmp/n8n.err",
         "n8n_out": "/tmp/n8n.log",
-        "reset_login": "/tmp/reset-login.log",
-        "evolution_err": "/tmp/evolution.err"
+        "evolution_err": "/tmp/evolution.err",
+        "evolution_log": "/opt/nexus/web/evolution.log",
+        "reset_login": "/tmp/reset-login.log"
     }
     
     logs = {}
@@ -81,7 +82,7 @@ def api_status():
         try:
             if os.path.exists(path):
                 with open(path, "r") as f:
-                    logs[name] = [l.strip() for l in f.readlines()[-50:]]
+                    logs[name] = [l.strip() for l in f.readlines()[-100:]]
             else:
                 logs[name] = [f"Log {path} no encontrado."]
         except Exception as e:
@@ -91,7 +92,9 @@ def api_status():
     db_users = []
     if DATABASE_URL:
         try:
-            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=auth,public")
+            # Soportar contraseña codificada en la conexión de diagnóstico
+            DIAG_URL = DATABASE_URL
+            conn = psycopg2.connect(DIAG_URL, connect_timeout=3, options="-c search_path=auth,public")
             cur = conn.cursor()
             cur.execute("""
                 SELECT created_at, ip_address, payload 
@@ -117,8 +120,22 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "NEXUS-PREMIUM-v3.18-COMMANDER"
+        "version_tag": "NEXUS-PREMIUM-v3.19-COMMANDER"
     }
+
+@app.get("/api/debug/logs")
+def get_debug_logs(file: str = "evolution.err"):
+    # Permitir leer de /tmp o /opt/nexus/web
+    if ".." in file or "/" in file: return "Invalid filename"
+    
+    paths = [f"/tmp/{file}", f"/opt/nexus/web/{file}"]
+    for path in paths:
+        try:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    return f.read()[-8000:]
+        except: pass
+    return f"File {file} not found in expected paths"
 
 @app.get("/api/debug/logs")
 def get_debug_logs(file: str = "evolution.err"):
