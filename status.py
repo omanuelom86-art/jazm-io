@@ -119,7 +119,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "NEXUS-PREMIUM-v4.3-GHOST_BUSTER"
+        "version_tag": "NEXUS-PREMIUM-v4.4-STABLE"
     }
 
 @app.get("/api/debug/logs")
@@ -302,7 +302,7 @@ async def status_dashboard():
         </div>
 
         <footer style="margin-top: 40px; text-align: center; color: var(--text-dim); font-size: 12px;">
-            PROJECT NEXUS AI v4.3 &bull; GHOST_BUSTER EDITION &bull; POWERED BY GROQ
+            PROJECT NEXUS AI &bull; GHOST_BUSTER FINAL &bull; POWERED BY GROQ
         </footer>
     </div>
 
