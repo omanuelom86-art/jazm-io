@@ -1,0 +1,22 @@
+#!/bin/bash
+export N8N_PORT="5678"
+export N8N_LISTEN_ADDRESS="0.0.0.0"
+export N8N_ENCRYPTION_KEY="nexus_secret_key"
+export N8N_USER_FOLDER="/opt/nexus/.n8n"
+export HOME="/opt/nexus"
+export N8N_PROTOCOL="https"
+export N8N_PATH="/n8n/"
+export WEBHOOK_URL="https://info86-new-espacio-jazmio.hf.space/n8n/"
+export N8N_BASE_URL="https://info86-new-espacio-jazmio.hf.space/n8n/"
+export N8N_EDITOR_BASE_URL="https://info86-new-espacio-jazmio.hf.space/n8n/"
+export N8N_LOG_LEVEL="debug"
+export N8N_BLOCK_IFRAME_ACCESS="false"
+export DB_TYPE="postgresdb"
+export DB_POSTGRESDB_HOST="aws-0-us-west-2.pooler.supabase.com"
+export DB_POSTGRESDB_PORT="5432"
+export DB_POSTGRESDB_DATABASE="postgres"
+export DB_POSTGRESDB_USER="postgres.htabdguydyysolkzdilm"
+export DB_POSTGRESDB_PASSWORD="*Mm0101mM****"
+export DB_POSTGRESDB_SCHEMA="n8n"
+
+n8n start
