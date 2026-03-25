@@ -8,7 +8,7 @@ RUN echo "Triggering rebuild for code synchronization..."
 USER root
 
 # 1. Instalamos dependencias y herramientas
-RUN apk update && apk add --no-cache nginx supervisor python3 py3-pip libpq nodejs npm \
+RUN apk update && apk add --no-cache nginx supervisor python3 py3-pip libpq nodejs-current npm \
     bash curl git make gcc g++ musl-dev linux-headers python3-dev findutils procps net-tools dos2unix redis
 
 # 2. Preparamos TU CARPETA personalizada
