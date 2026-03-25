@@ -42,6 +42,7 @@ def test_tcp(host, port):
 def test_sql():
     if not DATABASE_URL: return False
     try:
+        # Soportar contraseña codificada
         conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=evolution_api,public")
         cur = conn.cursor()
         cur.execute("SELECT 1")
@@ -92,9 +93,7 @@ def api_status():
     db_users = []
     if DATABASE_URL:
         try:
-            # Soportar contraseña codificada en la conexión de diagnóstico
-            DIAG_URL = DATABASE_URL
-            conn = psycopg2.connect(DIAG_URL, connect_timeout=3, options="-c search_path=auth,public")
+            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=auth,public")
             cur = conn.cursor()
             cur.execute("""
                 SELECT created_at, ip_address, payload 
@@ -124,26 +123,23 @@ def api_status():
     }
 
 @app.get("/api/debug/logs")
-def get_debug_logs(file: str = "evolution.err"):
-    # Permitir leer de /tmp o /opt/nexus/web
-    if ".." in file or "/" in file: return "Invalid filename"
+def get_debug_logs(file: str = "evolution_err"):
+    # Traducir nombres cortos si es necesario
+    file_map = {
+        "evolution_err": "/tmp/evolution.err",
+        "evolution_log": "/opt/nexus/web/evolution.log",
+        "n8n_err": "/tmp/n8n.err",
+        "n8n_log": "/tmp/n8n.log",
+        "reset_login": "/tmp/reset-login.log"
+    }
+    path = file_map.get(file, f"/tmp/{file}")
     
-    paths = [f"/tmp/{file}", f"/opt/nexus/web/{file}"]
-    for path in paths:
-        try:
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    return f.read()[-8000:]
-        except: pass
-    return f"File {file} not found in expected paths"
-
-@app.get("/api/debug/logs")
-def get_debug_logs(file: str = "evolution.err"):
-    path = f"/tmp/{file}"
+    if ".." in path: return "Invalid path"
+    
     try:
         if os.path.exists(path):
             with open(path, "r") as f:
-                return f.read()[-5000:]
+                return f.read()[-8000:]
         return f"File {path} not found"
     except Exception as e:
         return str(e)
@@ -306,12 +302,12 @@ async def status_dashboard():
         </div>
 
         <footer style="margin-top: 40px; text-align: center; color: var(--text-dim); font-size: 12px;">
-            PROJECT NEXUS AI v3.18 &bull; POWERED BY GROQ & HYPER-COMPRESSED INFRASTRUCTURE
+            PROJECT NEXUS AI v3.19 &bull; POWERED BY GROQ & HYPER-COMPRESSED INFRASTRUCTURE
         </footer>
     </div>
 
     <script>
-        let currentTab = 'n8n_err';
+        let currentTab = 'evolution_log';
         let fullData = null;
 
         async function update() {
@@ -348,7 +344,7 @@ async def status_dashboard():
                     grid.appendChild(card);
                 });
 
-                document.getElementById('uptime').innerText = `Sync: ${fullData.timestamp}`;
+                document.getElementById('uptime').innerText = `Sync: ${fullData.timestamp} (${fullData.version_tag})`;
 
                 // Tabs
                 const logKeys = Object.keys(fullData.logs);
