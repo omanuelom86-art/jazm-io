@@ -17,6 +17,6 @@ export DB_POSTGRESDB_PORT="5432"
 export DB_POSTGRESDB_DATABASE="postgres"
 export DB_POSTGRESDB_USER="postgres.htabdguydyysolkzdilm"
 export DB_POSTGRESDB_PASSWORD="*Mm0101mM****"
-export DB_POSTGRESDB_SCHEMA="public"
+export DB_POSTGRESDB_SCHEMA="n8n"
 
 n8n start

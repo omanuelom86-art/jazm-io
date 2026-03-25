@@ -17,7 +17,7 @@ COPY . .
 
 # 3. Instalamos dependencias de Python y n8n
 RUN pip3 install --break-system-packages --no-cache-dir -r requirements.txt && \
-    npm install n8n -g --omit=dev && \
+    npm install n8n@1.121.0 -g --omit=dev && \
     mkdir -p /opt/nexus/.n8n && \
     chown -R 1000:1000 /opt/nexus
 

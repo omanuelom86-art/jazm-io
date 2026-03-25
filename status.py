@@ -119,7 +119,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "NEXUS-PREMIUM-v4.5-STABLE"
+        "version_tag": "NEXUS-PREMIUM-v4.7.1-STABLE"
     }
 
 @app.get("/api/debug/logs")
@@ -332,7 +332,7 @@ async def status_dashboard():
         </div>
 
         <footer style="margin-top: 40px; text-align: center; color: var(--text-dim); font-size: 12px;">
-            PROJECT NEXUS AI &bull; ESTABILIZACIÓN v4.5 &bull; POWERED BY GROQ
+            PROJECT NEXUS AI &bull; ACCESO RESTAURADO v4.7.1 &bull; POWERED BY GROQ
         </footer>
     </div>
 
