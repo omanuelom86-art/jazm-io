@@ -7,6 +7,95 @@
     <title>Jazm.io - CRM Inteligente</title>
     <script type="module" crossorigin src="/assets/index-Bc6IvWS4.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-DrcM231M.css">
+    <style>
+      :root {
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.3);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        --accent-primary: #6366f1;
+        --accent-secondary: #a855f7;
+        --accent-success: #10b981;
+      }
+
+      body {
+        background: radial-gradient(circle at top left, #f3f4f6, #e5e7eb) !important;
+        font-family: 'Outfit', sans-serif !important;
+      }
+
+      #root {
+        transition: all 0.3s ease;
+      }
+
+      /* Glassmorphism Overrides */
+      .bg-white {
+        background: var(--glass-bg) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid var(--glass-border) !important;
+        box-shadow: var(--glass-shadow) !important;
+      }
+
+      .rounded-2xl {
+        border-radius: 1.5rem !important;
+      }
+
+      .text-indigo-600 {
+        color: var(--accent-primary) !important;
+      }
+
+      .bg-indigo-600 {
+        background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
+        border: none !important;
+      }
+
+      .hover\:bg-indigo-700:hover {
+        background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary)) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease forwards;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(99, 102, 241, 0.2);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.4); }
+
+      /* Botón flotante de WhatsApp premium */
+      .whatsapp-float {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #25d366;
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+        z-index: 9999;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .whatsapp-float:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5);
+      }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
     <div id="root"></div>

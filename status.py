@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="Jazmio Nexus Diagnostic V3.17-FINAL-FIX")
+app = FastAPI(title="Nexus AI | Intelligence Command Center")
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,6 +48,13 @@ def test_sql():
         cur.close()
         conn.close()
         return True
+    except:
+        return False
+
+def test_url(url):
+    try:
+        r = requests.get(url, timeout=3, allow_redirects=True)
+        return r.status_code in [200, 401, 404]
     except:
         return False
 
@@ -110,97 +117,243 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "ULTIMATE-COMMERCIAL-FIX-v3.17-FINAL-FIX"
+        "version_tag": "NEXUS-PREMIUM-v3.18-COMMANDER"
     }
-
-def test_url(url):
-    try:
-        r = requests.get(url, timeout=3, allow_redirects=True)
-        return r.status_code in [200, 401, 404]
-    except:
-        return False
 
 @app.get("/", response_class=HTMLResponse)
 @app.get("/status", response_class=HTMLResponse)
 async def status_dashboard():
     return '''<!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Jazmio Nexus - Estado v3.17</title>
+    <title>Nexus AI | Command Center</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; margin: 0; background: #0b1118; color: #e1e1e1; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 95%; max-width: 1000px; margin-top: 40px; padding-bottom: 40px; }
-        h1 { color: #00d4aa; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .card { background: #161e2b; padding: 16px; border-radius: 12px; border: 1px solid #1e293b; }
-        .badge { padding: 4px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
-        .badge-ok { background: #065f46; color: #34d399; }
-        .badge-err { background: #7f1d1d; color: #f87171; }
-        .log-section { width: 100%; margin-top: 30px; }
-        .log-tabs { display: flex; gap: 5px; margin-bottom: 5px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .log-tab { padding: 8px 12px; border: 1px solid #1e293b; cursor: pointer; font-size: 10px; white-space: nowrap; background: #161e2b; }
-        .log-tab.active { background: #1e293b; color: #00d4aa; border-color: #00d4aa; }
-        .log-content { background: #070a0f; color: #10b981; font-family: monospace; font-size: 11px; padding: 15px; border-radius: 8px; height: 350px; overflow-y: auto; white-space: pre-wrap; display: none; }
-        .log-content.active { display: block; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #94a3b8; }
-        th, td { border: 1px solid #1e293b; padding: 8px; text-align: left; }
+        :root {
+            --bg-dark: #0a0b10;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.5);
+            --text-main: #e2e8f0;
+            --text-dim: #94a3b8;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * { box-sizing: border-box; transition: all 0.3s ease; }
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            margin: 0; 
+            background: var(--bg-dark); 
+            background-image: radial-gradient(circle at 20% 20%, #1e1b4b 0%, transparent 40%),
+                              radial-gradient(circle at 80% 80%, #312e81 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        .container { width: 95%; max-width: 1200px; padding: 40px 20px; }
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 40px; 
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .logo { font-size: 28px; font-weight: 700; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
+        .logo .dot { width: 12px; height: 12px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 15px var(--accent-glow); }
+
+        .status-pill { 
+            background: var(--glass); 
+            border: 1px solid var(--glass-border); 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            backdrop-filter: blur(10px);
+        }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 40px; 
+        }
+
+        .card { 
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-5px); border-color: rgba(99, 102, 241, 0.3); background: rgba(255,255,255,0.05); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px; }
+        .card-title { font-size: 14px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .card-value { font-size: 32px; font-weight: 700; margin-bottom: 10px; }
+        
+        .indicator { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .indicator.ok { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .indicator.err { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+
+        .log-container { 
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+        }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
+        .tab { 
+            padding: 10px 20px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            font-weight: 600; 
+            white-space: nowrap;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dim);
+        }
+        .tab.active { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3); }
+
+        .log-viewport { 
+            background: rgba(0,0,0,0.3); 
+            border-radius: 16px; 
+            height: 400px; 
+            overflow-y: auto; 
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 11px; 
+            color: #10b981;
+            line-height: 1.6;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+
+        /* Custom Table for Users */
+        .user-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .user-table th { text-align: left; padding: 12px; color: var(--text-dim); border-bottom: 1px solid var(--glass-border); font-size: 12px; }
+        .user-table td { padding: 12px; border-bottom: 1px solid var(--glass-border); font-size: 13px; }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 JAZMIO NEXUS V3.17-FINAL-FIX</h1>
-        <div id="status-grid" class="grid">Conectando...</div>
-        
-        <div class="log-section">
-            <h3 style="color: #00d4aa;">📄 TELEMETRÍA N8N Y AUTH</h3>
-            <div id="log-tabs" class="log-tabs"></div>
-            <div id="log-contents"></div>
+        <header>
+            <div class="logo"><div class="dot"></div> Nexus AI</div>
+            <div class="status-pill" id="uptime">Checking System Core...</div>
+        </header>
+
+        <div class="grid" id="status-grid">
+            <!-- Cards populated by JS -->
         </div>
 
-        <div class="log-section">
-            <h3 style="color: #00d4aa;">👥 ÚLTIMOS USUARIOS</h3>
-            <div id="user-view"></div>
+        <div class="log-container">
+            <h3 style="margin-top:0; font-weight: 600; letter-spacing: -0.5px;">Telemetría de Sistema</h3>
+            <div class="tabs" id="log-tabs"></div>
+            <div class="log-viewport" id="log-viewport">Cargando flujos de datos...</div>
         </div>
 
-        <div style="margin-top: 30px; text-align: center; font-size: 12px; opacity: 0.6;">
-            VERSIÓN: <span id="vtag">---</span> | HORA: <span id="stime">---</span>
+        <div class="card" style="margin-top: 40px;">
+            <h3 style="margin-top:0; font-weight: 600;">Auditoría de Accesos</h3>
+            <div style="overflow-x: auto;">
+                <table class="user-table" id="user-view"></table>
+            </div>
         </div>
+
+        <footer style="margin-top: 40px; text-align: center; color: var(--text-dim); font-size: 12px;">
+            PROJECT NEXUS AI v3.18 &bull; POWERED BY GROQ & HYPER-COMPRESSED INFRASTRUCTURE
+        </footer>
     </div>
 
     <script>
         let currentTab = 'n8n_err';
+        let fullData = null;
+
         async function update() {
             try {
                 const r = await fetch('/api/status');
-                const d = await r.json();
+                fullData = await r.json();
                 
-                document.getElementById('status-grid').innerHTML = Object.entries(d.services).map(([k, ok]) => `
-                    <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <b>${k.toUpperCase()}</b>
-                            <span class="badge ${ok?'badge-ok':'badge-err'}">${ok?'ONLINE':'ERROR'}</span>
+                const grid = document.getElementById('status-grid');
+                grid.innerHTML = '';
+                
+                const statusMap = {
+                    'redis': { icon: '📦', title: 'Redis Cache' },
+                    'supabase': { icon: '🗄️', title: 'Supabase DB' },
+                    'n8n': { icon: '🤖', title: 'n8n Engine' },
+                    'evolution_api': { icon: '💬', title: 'WhatsApp API' },
+                    'crm': { icon: '🚀', title: 'Nexus CRM' },
+                    'nginx': { icon: '🌐', title: 'Gateway' }
+                };
+
+                Object.entries(fullData.services).forEach(([k, ok]) => {
+                    if(!statusMap[k]) return;
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            <span class="card-title">${statusMap[k].title}</span>
+                            <div class="indicator ${ok?'ok':'err'}">${ok?'✓':'!'}</div>
                         </div>
-                    </div>
+                        <div class="card-value">${ok?'Active':'Service Down'}</div>
+                        <div style="font-size: 12px; color: ${ok?'var(--success)':'var(--error)'}">
+                            ${ok?'Operating at peak performance':'Action required immediately'}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                document.getElementById('uptime').innerText = `Sync: ${fullData.timestamp}`;
+
+                // Tabs
+                const logKeys = Object.keys(fullData.logs);
+                document.getElementById('log-tabs').innerHTML = logKeys.sort().map(k => `
+                    <div class="tab ${k===currentTab?'active':''}" onclick="setTab('${k}')">${k.replace('_',' ').toUpperCase()}</div>
                 `).join('');
 
-                const logKeys = Object.keys(d.logs);
-                document.getElementById('log-tabs').innerHTML = logKeys.map(k => `
-                    <div class="log-tab ${k===currentTab?'active':''}" onclick="currentTab='${k}';update();">${k.toUpperCase()}</div>
-                `).join('');
-                document.getElementById('log-contents').innerHTML = logKeys.map(k => `
-                    <div class="log-content ${k===currentTab?'active':''}">${d.logs[k].join('\\n').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
-                `).join('');
+                renderLog();
 
-                document.getElementById('user-view').innerHTML = `<table>${d.db_users.map(u => `<tr><td>${u.email}</td><td>${u.id}</td></tr>`).join('')}</table>`;
-                document.getElementById('vtag').innerText = d.version_tag;
-                document.getElementById('stime').innerText = d.timestamp;
-                const activeEl = document.querySelector('.log-content.active');
-                if (activeEl) activeEl.scrollTop = activeEl.scrollHeight;
-            } catch(e) {}
+                // Users
+                document.getElementById('user-view').innerHTML = `
+                    <thead><tr><th>Identity</th><th>Created</th></tr></thead>
+                    <tbody>${fullData.db_users.map(u => `<tr><td>${u.email}</td><td style="color:var(--text-dim)">${u.created}</td></tr>`).join('')}</tbody>
+                `;
+
+            } catch(e) { console.error(e); }
         }
-        setInterval(update, 10000); update();
+
+        function setTab(k) {
+            currentTab = k;
+            update();
+        }
+
+        function renderLog() {
+            const view = document.getElementById('log-viewport');
+            if(fullData && fullData.logs[currentTab]) {
+                view.innerText = fullData.logs[currentTab].join('\\n');
+                view.scrollTop = view.scrollHeight;
+            }
+        }
+
+        setInterval(update, 10000); 
+        update();
     </script>
 </body>
 </html>'''

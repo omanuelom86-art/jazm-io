@@ -1,0 +1,156 @@
+{
+  "name": "AI_Hybrid_Handler",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nexus-ai-hybrid",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Evolution",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": "evolution_api",
+        "table": "contacts",
+        "filters": {
+          "conditions": [
+            {
+              "key": "number",
+              "operator": "equal",
+              "value": "={{ $json.body.data.key.remoteJid.split('@')[0] }}"
+            }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Get Contact Settings",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "placeholder",
+          "name": "Supabase Nexus"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.ia_active }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "3",
+      "name": "Is IA Active?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "systemMessage": "={{ $node[\"Get Contact Settings\"].json.system_prompt || \"Eres un asistente virtual profesional para el CRM Nexus AI.\" }}",
+          "temperature": 0.7
+        }
+      },
+      "id": "4",
+      "name": "Groq Inferencia",
+      "type": "n8n-nodes-base.groq",
+      "typeVersion": 1,
+      "position": [850, 200],
+      "credentials": {
+        "groqApi": {
+          "id": "placeholder",
+          "name": "Groq Cloud"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://info86-new-espacio-jazmio.hf.space/message/sendText/{{ $node[\"Webhook Evolution\"].json.body.instance }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "Supera"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"number\": \"{{ $node[\\\"Get Contact Settings\\\"].json.number }}\", \"text\": \"{{ $json.output }}\" }",
+        "options": {}
+      },
+      "id": "5",
+      "name": "Send AI Response",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "evolution_api",
+        "table": "contacts",
+        "data": {
+          "last_interaction": "={{ $now }}",
+          "ia_responses_count": "={{ ($node[\"Get Contact Settings\"].json.ia_responses_count || 0) + 1 }}"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "key": "id",
+              "operator": "equal",
+              "value": "={{ $node[\"Get Contact Settings\"].json.id }}"
+            }
+          ]
+        }
+      },
+      "id": "6",
+      "name": "Update Analytics",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1250, 200],
+      "credentials": {
+        "supabaseApi": {
+          "id": "placeholder",
+          "name": "Supabase Nexus"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Evolution": {
+      "main": [[{ "node": "Get Contact Settings", "type": "main", "index": 0 }]]
+    },
+    "Get Contact Settings": {
+      "main": [[{ "node": "Is IA Active?", "type": "main", "index": 0 }]]
+    },
+    "Is IA Active?": {
+      "main": [
+        [{ "node": "Groq Inferencia", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Groq Inferencia": {
+      "main": [[{ "node": "Send AI Response", "type": "main", "index": 0 }]]
+    },
+    "Send AI Response": {
+      "main": [[{ "node": "Update Analytics", "type": "main", "index": 0 }]]
+    }
+  }
+}
