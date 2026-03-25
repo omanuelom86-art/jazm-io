@@ -200,6 +200,7 @@ async def status_dashboard():
             padding: 8px 16px; 
             border-radius: 20px; 
             font-size: 14px; 
+            -webkit-backdrop-filter: blur(10px);
             backdrop-filter: blur(10px);
         }
 
@@ -215,6 +216,7 @@ async def status_dashboard():
             border: 1px solid var(--glass-border);
             padding: 24px;
             border-radius: 24px;
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
             position: relative;
             overflow: hidden;
@@ -235,6 +237,7 @@ async def status_dashboard():
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 30px;
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
         }
 
@@ -292,6 +295,32 @@ async def status_dashboard():
             <h3 style="margin-top:0; font-weight: 600; letter-spacing: -0.5px;">Telemetría de Sistema</h3>
             <div class="tabs" id="log-tabs"></div>
             <div class="log-viewport" id="log-viewport">Cargando flujos de datos...</div>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <h3 style="font-weight: 600; letter-spacing: -1px;">Equipo Nexus AI <span style="font-size: 12px; color: var(--accent); opacity: 0.7;">Agentes Activos</span></h3>
+            <div class="grid">
+                <div class="card">
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <img src="/assets/vinnie.png" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent);">
+                        <div>
+                            <div style="font-weight: 700;">VINNIE</div>
+                            <div style="font-size: 11px; color: var(--text-dim);">Virtual Assistant & Support</div>
+                        </div>
+                        <div style="margin-left: auto; color: var(--success); font-size: 18px;">●</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <img src="/assets/sophie.png" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent);">
+                        <div>
+                            <div style="font-weight: 700;">SOPHIE</div>
+                            <div style="font-size: 11px; color: var(--text-dim);">Strategic Marketing Bot</div>
+                        </div>
+                        <div style="margin-left: auto; color: var(--success); font-size: 18px;">●</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="card" style="margin-top: 40px;">
