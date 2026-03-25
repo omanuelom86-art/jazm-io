@@ -12,7 +12,7 @@ Para que el servidor funcione en **Hugging Face Spaces (HF)**, la conexión DEBE
 * **Usuario**: `postgres.htabdguydyysolkzdilm`
 * **Base de datos**: `postgres`
 * **Esquema de la API**: `evolution_api`
-* **URI Maestra**: `postgresql://postgres.htabdguydyysolkzdilm:*Mm0101mM****@aws-0-us-west-2.pooler.supabase.com:5432/postgres?schema=evolution_api`
+* **URI Maestra**: `postgresql://postgres.htabdguydyysolkzdilm:%2AMm0101mM%2A%2A%2A%2A@aws-0-us-west-2.pooler.supabase.com:5432/postgres?schema=evolution_api`
 
 > [!IMPORTANT]
 > **Por qué Puerto 5432?**: El puerto 6543 (Transaction Pooler) a veces da problemas con la persistencia de Evolution API. El puerto 5432 (Session Pooler) es más estable y es el que Supabase marca como "IPv4 Compatible" en tus capturas.

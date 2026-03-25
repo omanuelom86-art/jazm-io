@@ -53,7 +53,7 @@ chmod 666 "$LOG_FILE"
 while true; do
     echo "--- Starting Node $(node -v) ---" | tee -a "$LOG_FILE"
     # Forzamos DATABASE_CONNECTION_URI y DATABASE_URL - Session Pooler (IPv4 Compatible)
-    export DATABASE_CONNECTION_URI="postgresql://postgres.htabdguydyysolkzdilm:*Mm0101mM****@aws-0-us-west-2.pooler.supabase.com:5432/postgres?schema=evolution_api"
+    export DATABASE_CONNECTION_URI="postgresql://postgres.htabdguydyysolkzdilm:%2AMm0101mM%2A%2A%2A%2A@aws-0-us-west-2.pooler.supabase.com:5432/postgres?schema=evolution_api"
     export DATABASE_URL="$DATABASE_CONNECTION_URI"
     
     echo "--- Sincronizando Base de Datos (Prisma) ---" | tee -a "$LOG_FILE"    
