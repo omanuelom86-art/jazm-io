@@ -119,7 +119,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "NEXUS-PREMIUM-v4.4-STABLE"
+        "version_tag": "NEXUS-PREMIUM-v4.5-STABLE"
     }
 
 @app.get("/api/debug/logs")
@@ -151,6 +151,7 @@ async def status_dashboard():
 <html lang="es">
 <head>
     <title>Nexus AI | Command Center</title>
+    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -331,7 +332,7 @@ async def status_dashboard():
         </div>
 
         <footer style="margin-top: 40px; text-align: center; color: var(--text-dim); font-size: 12px;">
-            PROJECT NEXUS AI &bull; GHOST_BUSTER FINAL &bull; POWERED BY GROQ
+            PROJECT NEXUS AI &bull; ESTABILIZACIÓN v4.5 &bull; POWERED BY GROQ
         </footer>
     </div>
 
