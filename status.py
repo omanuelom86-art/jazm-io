@@ -302,7 +302,7 @@ async def status_dashboard():
         </div>
 
         <footer style="margin-top: 40px; text-align: center; color: var(--text-dim); font-size: 12px;">
-            PROJECT NEXUS AI v4.0 &bull; POWERED BY GROQ & HYPER-COMPRESSED INFRASTRUCTURE
+            PROJECT NEXUS AI v4.2 &bull; GHOST_BUSTER EDITION &bull; POWERED BY GROQ
         </footer>
     </div>
 
