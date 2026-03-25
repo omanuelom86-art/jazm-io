@@ -120,6 +120,17 @@ def api_status():
         "version_tag": "NEXUS-PREMIUM-v3.18-COMMANDER"
     }
 
+@app.get("/api/debug/logs")
+def get_debug_logs(file: str = "evolution.err"):
+    path = f"/tmp/{file}"
+    try:
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                return f.read()[-5000:]
+        return f"File {path} not found"
+    except Exception as e:
+        return str(e)
+
 @app.get("/", response_class=HTMLResponse)
 @app.get("/status", response_class=HTMLResponse)
 async def status_dashboard():
