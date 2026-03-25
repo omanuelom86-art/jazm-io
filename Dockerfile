@@ -8,7 +8,7 @@ RUN echo "Triggering rebuild for code synchronization..."
 USER root
 
 # 1. Instalamos dependencias y herramientas
-RUN apk update && apk add --no-cache nginx supervisor python3 py3-pip libpq nodejs-current npm \
+RUN apk update && apk add --no-cache nginx supervisor python3 py3-pip libpq nodejs npm \
     bash curl git make gcc g++ musl-dev linux-headers python3-dev findutils procps net-tools dos2unix redis
 
 # 2. Preparamos TU CARPETA personalizada
@@ -17,7 +17,9 @@ COPY . .
 
 # 3. Instalamos dependencias de Python y n8n
 RUN pip3 install --break-system-packages --no-cache-dir -r requirements.txt && \
-    npm install n8n@1.121.0 -g --omit=dev && \
+    npm install n8n@1.93.5 -g --omit=dev && \
+    node -v > /opt/nexus/node_v.txt && \
+    n8n --version > /opt/nexus/n8n_v.txt && \
     mkdir -p /opt/nexus/.n8n && \
     chown -R 1000:1000 /opt/nexus
 

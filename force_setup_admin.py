@@ -31,7 +31,8 @@ def force_setup():
         
         if existing_user:
             user_id = str(existing_user[0])
-            print(f"Usuario existente detectado: {user_id}. Omitiendo recreación para preservar estabilidad.")
+            print(f"Usuario existente detectado: {user_id}. Reseteando contraseña y sincronizando perfil.")
+            cur.execute("UPDATE auth.users SET encrypted_password = crypt(%s, gen_salt('bf', 10)), updated_at = NOW() WHERE id = %s", (password, user_id))
         else:
             user_id = str(uuid.uuid4())
             print(f"Creando nuevo usuario administrativo: {user_id}")
