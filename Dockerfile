@@ -9,11 +9,7 @@ USER root
 
 # 1. Instalamos dependencias y herramientas
 RUN apk update && apk add --no-cache nginx supervisor python3 py3-pip libpq nodejs-current npm \
-    bash curl git make gcc g++ musl-dev linux-headers python3-dev findutils procps net-tools dos2unix redis && \
-    which node && node -v && \
-    mv /usr/bin/node /usr/local/bin/node_old || true && \
-    ln -sf /usr/bin/node22 /usr/bin/node || ln -sf /usr/bin/nodejs /usr/bin/node || true && \
-    ln -sf /usr/bin/node /usr/local/bin/node
+    bash curl git make gcc g++ musl-dev linux-headers python3-dev findutils procps net-tools dos2unix redis
 
 # 2. Preparamos TU CARPETA personalizada
 WORKDIR /opt/nexus
