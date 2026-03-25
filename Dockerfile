@@ -1,4 +1,4 @@
-# FORCE FULL REBUILD: 2026-03-25T03:45:00 (v5.1.0-FINAL)
+# FORCE FULL REBUILD: 2026-03-25T05:50:00 (v5.6.0-STABLE)
 # REBUILD TRIGGER
 
 FROM atendai/evolution-api:latest
@@ -17,7 +17,7 @@ COPY . .
 
 # 3. Instalamos dependencias de Python y n8n
 RUN pip3 install --break-system-packages --no-cache-dir -r requirements.txt && \
-    npm install n8n@1.93.5 -g --omit=dev && \
+    npm install n8n@1.97.1 -g --omit=dev && \
     node -v > /opt/nexus/node_v.txt && \
     n8n --version > /opt/nexus/n8n_v.txt && \
     mkdir -p /opt/nexus/.n8n && \
