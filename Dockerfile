@@ -1,4 +1,4 @@
-# FORCE FULL REBUILD: 2026-03-25T02:00:00 (v3.20-FIX)
+# FORCE FULL REBUILD: 2026-03-25T03:45:00 (v5.1.0-FINAL)
 # REBUILD TRIGGER
 
 FROM atendai/evolution-api:latest
@@ -9,7 +9,8 @@ USER root
 
 # 1. Instalamos dependencias y herramientas
 RUN apk update && apk add --no-cache nginx supervisor python3 py3-pip libpq nodejs-current npm \
-    bash curl git make gcc g++ musl-dev linux-headers python3-dev findutils procps net-tools dos2unix redis
+    bash curl git make gcc g++ musl-dev linux-headers python3-dev findutils procps net-tools dos2unix redis && \
+    ln -sf /usr/bin/node /usr/local/bin/node
 
 # 2. Preparamos TU CARPETA personalizada
 WORKDIR /opt/nexus
