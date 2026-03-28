@@ -3,7 +3,7 @@
 
 FROM atendai/evolution-api:latest
 
-RUN echo "Triggering rebuild for code synchronization..."
+RUN echo "Triggering rebuild to unstuck Hugging Face pipeline (Cache Bust 3)..."
 
 USER root
 
@@ -25,12 +25,12 @@ RUN pip3 install --break-system-packages --no-cache-dir -r requirements.txt && \
 
 # 4. Buscador Dinámico de la Evolution API (Symlink para retrocompatibilidad)
 RUN if [ -f "/evolution/dist/main.js" ]; then \
-        ln -s /evolution/dist/main.js /opt/nexus/evolution_main.js; \
+    ln -s /evolution/dist/main.js /opt/nexus/evolution_main.js; \
     elif [ -f "/evolution/dist/src/main.js" ]; then \
-        ln -s /evolution/dist/src/main.js /opt/nexus/evolution_main.js; \
+    ln -s /evolution/dist/src/main.js /opt/nexus/evolution_main.js; \
     else \
-        ACTUAL_PATH=$(find /evolution -name main.js | grep -v "node_modules" | head -n 1); \
-        ln -s "$ACTUAL_PATH" /opt/nexus/evolution_main.js; \
+    ACTUAL_PATH=$(find /evolution -name main.js | grep -v "node_modules" | head -n 1); \
+    ln -s "$ACTUAL_PATH" /opt/nexus/evolution_main.js; \
     fi
 
 # 5. Organizamos el Manager y CRM
