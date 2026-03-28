@@ -11,17 +11,21 @@ USER root
 RUN apk update && apk add --no-cache nginx supervisor python3 py3-pip libpq nodejs npm \
     bash curl git make gcc g++ musl-dev linux-headers python3-dev findutils procps net-tools dos2unix redis
 
-# 2. Preparamos TU CARPETA personalizada
+# 2. Instalamos dependencias de Python y n8n (CON CACHÉ PERMANENTE)
+# Se hace ANTES del COPY para que no se recompile en cada pequeño cambio.
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
+    npm install n8n@1.97.1 -g --omit=dev && \
+    node -v > /opt/node_v.txt && \
+    n8n --version > /opt/n8n_v.txt
+
+# 3. Preparamos TU CARPETA personalizada
 WORKDIR /opt/nexus
 COPY . .
 
-# 3. Instalamos dependencias de Python y n8n
-RUN pip3 install --break-system-packages --no-cache-dir -r requirements.txt && \
-    npm install n8n@1.97.1 -g --omit=dev && \
-    node -v > /opt/nexus/node_v.txt && \
-    n8n --version > /opt/nexus/n8n_v.txt && \
-    mkdir -p /opt/nexus/.n8n && \
+RUN mkdir -p /opt/nexus/.n8n && \
     chown -R 1000:1000 /opt/nexus
+
 
 # 4. Buscador Dinámico de la Evolution API (Symlink para retrocompatibilidad)
 RUN if [ -f "/evolution/dist/main.js" ]; then \
