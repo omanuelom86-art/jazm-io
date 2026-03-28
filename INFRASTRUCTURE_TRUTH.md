@@ -42,13 +42,13 @@ Para evitar errores de "White Screen" en n8n y Evolution:
 
 ## 4. 🔑 Credenciales Maestras (Verificadas)
 
-* **Admin Email**: `omanuelom86@gmail.com`
-* **Admin Password**: `Nexus2026*`
-* **n8n User**: `omanuelom86@gmail.com`
-* **n8n Password**: `Mm0101mM*`
-* **Evolution API Key**: `Supera`
-* **Groq API Key**: `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`
-* **Apify Token**: `apify_api_W1ZZqkMpWGVYmFafu4qeCmthrGMp7I4vk3jr`
+* **Admin Email**: `[Tu Email Real]`
+* **Admin Password**: `[TU_CONTRASEÑA_DEL_ENV]`
+* **n8n User**: `[El mismo que admin]`
+* **n8n Password**: `[TU_CONTRASEÑA_DEL_ENV]`
+* **Evolution API Key**: `[LA_API_KEY_DEL_ENV]`
+* **Groq API Key**: `[LA_API_KEY_DEL_ENV]`
+* **Apify Token**: `[LA_API_KEY_DEL_ENV]`
 * **Supabase Actual**: `htabdguydyysolkzdilm` (AWS West 2 Pooler)
 
 ---
