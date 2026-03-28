@@ -11,7 +11,10 @@
       "name": "Webhook Evolution",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -32,7 +35,10 @@
       "name": "Get Contact Settings",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [450, 300],
+      "position": [
+        450,
+        300
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "placeholder",
@@ -55,7 +61,10 @@
       "name": "Is IA Active?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [
+        650,
+        300
+      ]
     },
     {
       "parameters": {
@@ -69,7 +78,10 @@
       "name": "Groq Inferencia",
       "type": "n8n-nodes-base.groq",
       "typeVersion": 1,
-      "position": [850, 200],
+      "position": [
+        850,
+        200
+      ],
       "credentials": {
         "groqApi": {
           "id": "placeholder",
@@ -99,7 +111,10 @@
       "name": "Send AI Response",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1050, 200]
+      "position": [
+        1050,
+        200
+      ]
     },
     {
       "parameters": {
@@ -124,7 +139,10 @@
       "name": "Update Analytics",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1250, 200],
+      "position": [
+        1250,
+        200
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "placeholder",
@@ -135,22 +153,60 @@
   ],
   "connections": {
     "Webhook Evolution": {
-      "main": [[{ "node": "Get Contact Settings", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Get Contact Settings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Get Contact Settings": {
-      "main": [[{ "node": "Is IA Active?", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Is IA Active?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Is IA Active?": {
       "main": [
-        [{ "node": "Groq Inferencia", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Groq Inferencia",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     },
     "Groq Inferencia": {
-      "main": [[{ "node": "Send AI Response", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Send AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Send AI Response": {
-      "main": [[{ "node": "Update Analytics", "type": "main", "index": 0 }]]
+      "main": [
+        [
+          {
+            "node": "Update Analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   }
 }
