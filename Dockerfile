@@ -1,4 +1,4 @@
-# FORCE FULL REBUILD: 2026-03-29T11:50:00 (v5.8.0-FIX)
+# FORCE FULL REBUILD: 2026-03-29T15:00:00 (v6.0.0-GOLDEN)
 FROM atendai/evolution-api:latest
 
 USER root
@@ -26,8 +26,8 @@ RUN ln -sf $(find /evolution -name main.js | grep -v "node_modules" | head -n 1)
     cp -r assets /opt/nexus/web/ 2>/dev/null || true && \
     cp -r manager /opt/nexus/web/ 2>/dev/null || true && \
     cp index.html /opt/nexus/web/ 2>/dev/null || true && \
-    dos2unix /opt/nexus/*.sh && \
-    chmod +x /opt/nexus/*.sh && \
+    find /opt/nexus -name "*.sh" -exec dos2unix {} + 2>/dev/null || true && \
+    find /opt/nexus -name "*.sh" -exec chmod +x {} + 2>/dev/null || true && \
     chown -R 1000:1000 /opt/nexus /evolution /var/log /var/run /var/cache/nginx /var/lib/redis /run/nginx /var/lib/nginx /etc/supervisor /etc/nginx /etc/redis
 
 # 5. Overwrite configs
@@ -38,4 +38,4 @@ COPY redis.conf /etc/redis/redis.conf
 EXPOSE 7860
 USER 1000
 ENTRYPOINT []
-CMD ["/usr/bin/supervisord", "-c", "/opt/nexus/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
