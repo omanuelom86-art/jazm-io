@@ -1,9 +1,9 @@
-# FORCE FULL REBUILD: 2026-03-28T18:35:00 (v5.6.1-STABLE)
-# REBUILD TRIGGER
+# FORCE FULL REBUILD: 2026-03-28T18:45:00 (v5.6.2-STABLE)
+# REBUILD TRIGGER (Optimized with .dockerignore)
 
 FROM atendai/evolution-api:latest
 
-RUN echo "Triggering rebuild to fix 'Cuenta en Revision' and 'Building' status (Cache Bust 4)..."
+RUN echo "Triggering optimized rebuild to fix 'Building' status and speed up deployment (Cache Bust 5)..."
 
 USER root
 
