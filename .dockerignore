@@ -18,10 +18,6 @@ build/
 .tmp.drivedownload/
 .tmp.driveupload/
 
-# ASSETS & MEDIA (Only if they are not needed in the container)
-assets/
-**/assets/
-
 # IDE & SYSTEM
 .vscode/
 .atom8n/
@@ -44,16 +40,31 @@ venv/
 output.txt
 push_error.txt
 error.log
-problemas del sistema.txt
 
 # DOCKER (Self)
-Dockerfile
 .dockerignore
 docker-compose.yml
-
-# EXCLUDE EVERYTHING ELSE BY DEFAULT AND INCLUDE ONLY WHAT IS NEEDED?
-# No, Alpine/HF needs many scripts. Let's stay with whitelist of ignores.
 
 # WORKFLOWS & N8N
 .n8n/
 n8n-workflows/
+
+# SCRIPTS DE UTILIDAD (no necesarios en contenedor)
+audit_*.py
+fix_*.py
+check_*.py
+build_*.py
+create_*.py
+force_*.py
+deep_*.py
+final_*.py
+extract_*.py
+list_*.py
+analyze_*.py
+groqify_*.py
+inject_*.py
+fetch_hf_*.py
+master_*.py
+add_*.py
+db_saas_*.py
+keepalive.py
