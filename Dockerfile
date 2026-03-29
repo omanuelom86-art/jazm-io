@@ -23,7 +23,8 @@ COPY . .
 # 4. Permissions & Symlinks
 RUN ln -sf $(find /evolution -name main.js | grep -v "node_modules" | head -n 1) /opt/nexus/evolution_main.js && \
     mkdir -p /opt/nexus/web /opt/nexus/.n8n && \
-    cp -r assets/* /opt/nexus/web/ 2>/dev/null || true && \
+    cp -r assets /opt/nexus/web/ 2>/dev/null || true && \
+    cp -r manager /opt/nexus/web/ 2>/dev/null || true && \
     cp index.html /opt/nexus/web/ 2>/dev/null || true && \
     dos2unix /opt/nexus/*.sh && \
     chmod +x /opt/nexus/*.sh && \
