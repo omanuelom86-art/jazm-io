@@ -13,79 +13,20 @@ assets/
 .atom8n/
 __pycache__/
 *.pyc
-Dockerfile
-deploy_assets.ps1
-build_and_push.ps1
-requirements.txt
-README.md
-INFRASTRUCTURE_TRUTH.md
-PROJECT_LOG.md
-status.py
-check_health.py
-inspect_profiles.py
-find_all_profiles.py
-check_auth_users.py
-count_users.py
-ensure_admin.py
-check_current_user.py
-check_rls.py
-fetch_hf_logs.py
-problemas del sistema.txt
-push_error.txt
-output.txt
-final_hunt.py
-master_repair.py
-audit_users.py
-audit_rls.py
-audit_n8n_users.py
-audit_db.py
-analyze_n8n.py
-add_whatsapp_instances_table.py
-create_admin_user.py
-db_saas_trigger.py
-deep_audit.py
-extract_config.py
-fix_ai_settings_fk.py
-fix_grants_all.py
-fix_nexus_syntax.py
-fix_postgrest.py
-fix_profile.py
-fix_rls.py
-fix_saas_rls.py
-fix_webhook_payload.py
-force_setup_admin.py
-groqify_templates.py
-import_n8n_workflows.ps1
-inject_n8n.py
-list_tables.py
-schema_setup.sql
-setup_ai_agents_db.py
-start_evolution.sh
-start_n8n.sh
-update_nexus_schema.sql
-verify_db.py
-verify_db_state.py
-verify_identity.py
-verify_profile.py
-whatsapp_and_ai_schema.sql
-ai_settings_schema.sql
-create_ai_agents_v2.sql
-init_ai_module.sql
-migration_crm_overhaul.sql
-migration_crm_v2_features.sql
-supabase-migration.sql
-supabase_migration_deals.sql
-supabase_schema_fix.sql
-sync_missing_profiles.sql
-jazm-io/api/
-jazm-io/docs/
-jazm-io/public/
-jazm-io/src/
-jazm-io/index.html
-jazm-io/package.json
-jazm-io/package-lock.json
-jazm-io/postcss.config.js
-jazm-io/tailwind.config.js
-jazm-io/tsconfig.json
-jazm-io/tsconfig.node.json
-jazm-io/vite.config.ts
+# KEEPALIVE THESE FOR BUILD:
+# Dockerfile (Wait, ignore this is fine if you only use 'COPY . .')
+# requirements.txt
+# nginx.conf
+# supervisord.conf
+# redis.conf
+# status.py
+# ...
+# The rule below should be more selective
+/jazm-io/
+/manager/
+/infra/
+/api/
+/web/
+/doc/
+/src/
+/public/
