@@ -41,10 +41,10 @@ venv/
 # LOGS & TEMP
 *.log
 *.err
-*.txt
 output.txt
 push_error.txt
 error.log
+problemas del sistema.txt
 
 # DOCKER (Self)
 Dockerfile
