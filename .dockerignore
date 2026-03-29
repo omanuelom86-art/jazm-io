@@ -1,32 +1,59 @@
+# GIT & CONFIGS
 .git
+.gitignore
 .env
-node_modules
-jazm-io/node_modules/
-jazm-io/dist/
+.env.example
+*.env
+
+# NODE & PACKAGES
+node_modules/
+**/node_modules/
+package-lock.json
+
+# BUILD OUTPUTS
 dist/
-assets/
-*.log
-*.err
-.tmp.driveupload/
+**/dist/
+build/
+**/build/
 .tmp.drivedownload/
+.tmp.driveupload/
+
+# ASSETS & MEDIA (Only if they are not needed in the container)
+assets/
+**/assets/
+
+# IDE & SYSTEM
 .vscode/
 .atom8n/
+.idea/
+.DS_Store
+Thumbs.db
+
+# PYTHON
 __pycache__/
 *.pyc
-# KEEPALIVE THESE FOR BUILD:
-# Dockerfile (Wait, ignore this is fine if you only use 'COPY . .')
-# requirements.txt
-# nginx.conf
-# supervisord.conf
-# redis.conf
-# status.py
-# ...
-# The rule below should be more selective
-/jazm-io/
-/manager/
-/infra/
-/api/
-/web/
-/doc/
-/src/
-/public/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# LOGS & TEMP
+*.log
+*.err
+*.txt
+output.txt
+push_error.txt
+error.log
+
+# DOCKER (Self)
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# EXCLUDE EVERYTHING ELSE BY DEFAULT AND INCLUDE ONLY WHAT IS NEEDED?
+# No, Alpine/HF needs many scripts. Let's stay with whitelist of ignores.
+
+# WORKFLOWS & N8N
+.n8n/
+n8n-workflows/
