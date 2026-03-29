@@ -1,9 +1,9 @@
-# FORCE FULL REBUILD: 2026-03-25T05:50:00 (v5.6.0-STABLE)
+# FORCE FULL REBUILD: 2026-03-28T18:35:00 (v5.6.1-STABLE)
 # REBUILD TRIGGER
 
 FROM atendai/evolution-api:latest
 
-RUN echo "Triggering rebuild to unstuck Hugging Face pipeline (Cache Bust 3)..."
+RUN echo "Triggering rebuild to fix 'Cuenta en Revision' and 'Building' status (Cache Bust 4)..."
 
 USER root
 
