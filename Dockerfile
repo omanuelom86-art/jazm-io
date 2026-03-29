@@ -1,4 +1,4 @@
-# FORCE FULL REBUILD: 2026-03-29T08:50:00 (v5.7.0)
+# FORCE FULL REBUILD: 2026-03-29T11:50:00 (v5.8.0-FIX)
 FROM atendai/evolution-api:latest
 
 USER root
@@ -11,7 +11,7 @@ RUN apk update && apk add --no-cache \
     mkdir -p /var/log/nginx /var/cache/nginx /var/run /run/nginx /var/lib/nginx /var/lib/redis /etc/redis /etc/supervisor/conf.d
 
 # 2. Python & n8n Layer (Heavily cached)
-COPY requirements.txt /tmp/requirements.txt
+COPY ./requirements.txt /tmp/requirements.txt
 RUN pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
     npm install n8n@1.97.1 -g --omit=dev && \
     n8n --version > /opt/n8n_v.txt
