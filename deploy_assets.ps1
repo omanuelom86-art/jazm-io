@@ -7,6 +7,11 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+Write-Host "Limpiando binarios viejos para evitar caché del navegador..."
+if (Test-Path "..\assets") {
+    Remove-Item -Path "..\assets\*" -Recurse -Force
+}
+
 Write-Host "Copiando archivos estáticos de React hacia la carpeta raíz que Hugging Face (Docker) lee..."
 Copy-Item -Path "dist\index.html" -Destination "..\index.html" -Force
 Copy-Item -Path "dist\assets\*" -Destination "..\assets\" -Recurse -Force
