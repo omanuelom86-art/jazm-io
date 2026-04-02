@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 load_dotenv()
+VERSION = "NEXUS-AGENTIC-HUB-v11.6-SYNC"
 
 app = FastAPI(title="Nexus AI | Intelligence Command Center")
 
@@ -125,7 +126,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "NEXUS-PREMIUM-v10.1.0-CLAUDE-SYNC"
+        "version_tag": VERSION
     }
 
 @app.get("/status")
