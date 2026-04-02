@@ -35,8 +35,8 @@ Para que el servidor funcione en **Hugging Face Spaces (HF)**, la conexión DEBE
 Para evitar errores de "White Screen" en n8n y Evolution:
 
 * **Headers**: Usar `proxy_http_version 1.1;`, `Upgrade $http_upgrade` y `Connection "upgrade"`.
-* **🚀 Regla de Oro (n8n Fix)**: El `proxy_pass` para `/n8n/` en `nginx.conf` **DEBE** terminar con `/` y apuntar al puerto **3100**. Ejemplo: `proxy_pass http://127.0.0.1:3100/;`
-* **Sub-ruta**: El `N8N_BASE_URL` debe coincidir con el `location /n8n/` de Nginx y terminar en `/n8n/`.
+* **🚀 Regla de Oro (n8n Fix)**: El `proxy_pass` para `/n8n/` en `nginx.conf` debe apuntar al puerto **3100**. Ejemplo: `proxy_pass http://127.0.0.1:3100;`
+* **Sub-ruta**: El `N8N_PATH` debe ser `/n8n/` (obligatorio para aislamiento de Cookies).
 * **⚠️ SSL Error Fix**: El protocolo interno DEBE ser `http` (no `https`) para evitar el error `ERR_CERT_AUTHORITY_INVALID`.
 
 ---

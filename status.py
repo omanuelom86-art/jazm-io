@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 load_dotenv()
-VERSION = "NEXUS-AGENTIC-HUB-v11.6-SYNC"
+VERSION = "NEXUS-AGENTIC-HUB-v11.7-SYNC"
 
 app = FastAPI(title="Nexus AI | Intelligence Command Center")
 
@@ -69,7 +69,7 @@ def api_status():
         "supabase": test_sql(),
         "crm": test_url(f"http://127.0.0.1:{PORT}/index.html"),
         "evolution_api": test_url("http://127.0.0.1:8080/health"),
-        "n8n": test_url("http://127.0.0.1:3100/healthz"),
+        "n8n": test_url("http://127.0.0.1:3100/n8n/healthz"),
         "nginx": test_tcp("127.0.0.1", PORT)
     }
     
