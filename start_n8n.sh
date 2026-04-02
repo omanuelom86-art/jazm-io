@@ -1,6 +1,6 @@
 #!/bin/bash
 export N8N_PORT="5678"
-export N8N_PATH="/n8n/"
+export N8N_PATH="/"
 export N8N_LISTEN_ADDRESS="0.0.0.0"
 export N8N_ENCRYPTION_KEY="nexus_secret_key"
 export N8N_USER_FOLDER="/opt/nexus/.n8n"
