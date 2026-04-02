@@ -121,7 +121,7 @@ def api_status():
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "NEXUS-PREMIUM-v5.2.1-STABLE"
+        "version_tag": "NEXUS-PREMIUM-v5.2.2-FIX-SYNC"
     }
 
 @app.get("/api/debug/logs")
