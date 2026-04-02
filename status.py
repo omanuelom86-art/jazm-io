@@ -6,6 +6,7 @@ import json
 import socket
 import psycopg2
 from datetime import datetime
+import urllib.parse
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,6 +32,7 @@ if DATABASE_URL and "?" in DATABASE_URL:
     DATABASE_URL = DATABASE_URL.split("?")[0]
 if DATABASE_URL:
     DATABASE_URL = DATABASE_URL.strip('"').strip("'")
+    DATABASE_URL = urllib.parse.unquote(DATABASE_URL)
 
 def test_tcp(host, port):
     try:
@@ -42,8 +44,8 @@ def test_tcp(host, port):
 def test_sql():
     if not DATABASE_URL: return False
     try:
-        # Soportar contraseña codificada
-        conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=evolution_api,public")
+        # Soportar contraseña codificada y omitir opciones problemáticas en poolers
+        conn = psycopg2.connect(DATABASE_URL, connect_timeout=3)
         cur = conn.cursor()
         cur.execute("SELECT 1")
         cur.close()
@@ -93,7 +95,7 @@ def api_status():
     db_users = []
     if DATABASE_URL:
         try:
-            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3, options="-c search_path=auth,public")
+            conn = psycopg2.connect(DATABASE_URL, connect_timeout=3)
             cur = conn.cursor()
             cur.execute("""
                 SELECT created_at, ip_address, payload 
