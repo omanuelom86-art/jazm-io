@@ -68,9 +68,12 @@ def api_status():
         "supabase": test_sql(),
         "crm": test_url(f"http://127.0.0.1:{PORT}/index.html"),
         "evolution_api": test_url("http://127.0.0.1:8080/health"),
-        "n8n": test_url("http://127.0.0.1:5678/healthz"),
+        "n8n": test_url("http://127.0.0.1:3100/healthz"),
         "nginx": test_tcp("127.0.0.1", PORT)
     }
+    
+    # Check if all critical services are up
+    is_healthy = results["supabase"] and results["n8n"] and results["evolution_api"]
     
     log_files = {
         "n8n_err": "/tmp/n8n.err",
@@ -117,11 +120,22 @@ def api_status():
     logs["AUTH_AUDIT"] = audit_logs
 
     return {
+        "status": "healthy" if is_healthy else "unhealthy",
         "services": results,
         "logs": logs,
         "db_users": db_users,
         "timestamp": datetime.now().strftime("%H:%M:%S (%d/%m)"),
-        "version_tag": "NEXUS-PREMIUM-v10.0.0-PREMIUM-UI"
+        "version_tag": "NEXUS-PREMIUM-v10.1.0-CLAUDE-SYNC"
+    }
+
+@app.get("/status")
+def health_check():
+    # Strict compliance with Diagnostic Guide
+    data = api_status()
+    return {
+        "status": data["status"],
+        "timestamp": data["timestamp"],
+        "version": data["version_tag"]
     }
 
 @app.get("/api/debug/logs")
@@ -146,8 +160,8 @@ def get_debug_logs(file: str = "evolution_err"):
     except Exception as e:
         return str(e)
 
+@app.get("/dashboard", response_class=HTMLResponse)
 @app.get("/", response_class=HTMLResponse)
-@app.get("/status", response_class=HTMLResponse)
 async def status_dashboard():
     return '''<!DOCTYPE html>
 <html lang="es">
