@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 load_dotenv()
-VERSION = "NEXUS-AGENTIC-HUB-v11.9-STABLE"
+VERSION = "NEXUS-AGENTIC-HUB-v11.10-STABLE"
 
 app = FastAPI(title="Nexus AI | Intelligence Command Center")
 

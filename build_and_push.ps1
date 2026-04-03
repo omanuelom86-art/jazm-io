@@ -1,11 +1,12 @@
-Set-Location "C:\Jazmio servidor Hunnging\jazm-io"
-Write-Host "Construyendo (Build) el Frontend en React..."
-npm run build
-
-if ($LASTEXITCODE -ne 0) { 
-    Write-Host "Fallo el build"
-    exit 1
-}
+# Set-Location "C:\Jazmio servidor Hunnging\jazm-io"
+# Write-Host "Construyendo (Build) el Frontend en React..."
+# $env:NODE_OPTIONS = "--max-old-space-size=4096"
+# npm run build
+# 
+# if ($LASTEXITCODE -ne 0) { 
+#     Write-Host "Fallo el build"
+#     exit 1
+# }
 
 Write-Host "Copiando archivos estaticos de React hacia la carpeta que Hugging Face lee..."
 Copy-Item -Path "dist\index.html" -Destination "..\index.html" -Force
@@ -15,7 +16,7 @@ Copy-Item -Path "dist\nexus-assets\*" -Destination "..\nexus-assets\" -Recurse -
 Set-Location "C:\Jazmio servidor Hunnging"
 Write-Host "Registrando todos los archivos modificados..."
 git add -A
-git commit -m "NEXUS-AGENTIC-HUB: v11.9-STABLE - n8n Subpath Stable Fix"
+git commit -m "NEXUS-AGENTIC-HUB: v11.10-STABLE - n8n Subpath Environment Fix"
 
 Write-Host "Subiendo a GitHub (Railway)..."
 git push github main
