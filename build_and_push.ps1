@@ -15,7 +15,7 @@ Copy-Item -Path "dist\nexus-assets\*" -Destination "..\nexus-assets\" -Recurse -
 Set-Location "C:\Jazmio servidor Hunnging"
 Write-Host "Registrando todos los archivos modificados..."
 git add -A
-git commit -m "NEXUS-AGENTIC-HUB: v11.8-FINAL - Syncing AI Hub + Stable DB + Nginx Fix"
+git commit -m "NEXUS-AGENTIC-HUB: v11.9-STABLE - n8n Subpath Stable Fix"
 
 Write-Host "Subiendo a GitHub (Railway)..."
 git push github main
