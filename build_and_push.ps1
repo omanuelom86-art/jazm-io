@@ -14,10 +14,8 @@ Copy-Item -Path "dist\nexus-assets\*" -Destination "..\nexus-assets\" -Recurse -
 
 Set-Location "C:\Jazmio servidor Hunnging"
 Write-Host "Registrando todos los archivos modificados..."
-# Forzamos agregar todo lo importante para el despliegue
-git add index.html nexus-assets/ start_n8n.sh status.py nginx.conf supervisord.conf Dockerfile build_and_push.ps1 INFRASTRUCTURE_TRUTH.md README.md skills/ tools_from_video/
-
-git commit -m "NEXUS-AGENTIC-HUB: v11.5 - Agregadas 21 Skills, GWS CLI y correcciones SSL"
+git add -A
+git commit -m "NEXUS-AGENTIC-HUB: v11.8-FINAL - Syncing AI Hub + Stable DB + Nginx Fix"
 
 Write-Host "Subiendo a GitHub (Railway)..."
 git push github main

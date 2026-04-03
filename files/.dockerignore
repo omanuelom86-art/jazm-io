@@ -1,0 +1,70 @@
+# GIT & CONFIGS
+.git
+.gitignore
+.env
+.env.example
+*.env
+
+# NODE & PACKAGES
+node_modules/
+**/node_modules/
+package-lock.json
+
+# BUILD OUTPUTS
+dist/
+**/dist/
+build/
+**/build/
+.tmp.drivedownload/
+.tmp.driveupload/
+
+# IDE & SYSTEM
+.vscode/
+.atom8n/
+.idea/
+.DS_Store
+Thumbs.db
+
+# PYTHON
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# LOGS & TEMP
+*.log
+*.err
+output.txt
+push_error.txt
+error.log
+
+# DOCKER (Self)
+.dockerignore
+docker-compose.yml
+
+# WORKFLOWS & N8N
+.n8n/
+n8n-workflows/
+
+# SCRIPTS DE UTILIDAD (no necesarios en contenedor)
+audit_*.py
+fix_*.py
+check_*.py
+build_*.py
+create_*.py
+force_*.py
+deep_*.py
+final_*.py
+extract_*.py
+list_*.py
+analyze_*.py
+groqify_*.py
+inject_*.py
+fetch_hf_*.py
+master_*.py
+add_*.py
+db_saas_*.py
+keepalive.py
