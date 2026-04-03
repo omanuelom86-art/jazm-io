@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 load_dotenv()
-VERSION = "NEXUS-v12.0-N8N-ROOT-MODE"
+VERSION = "NEXUS-v13.0-DEEP-AUDIT-STABLE"
 
 app = FastAPI(title="Nexus AI | Intelligence Command Center")
 
