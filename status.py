@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 load_dotenv()
-VERSION = "NEXUS-v14.1-ISOLATED-CONFLICT-FIX"
+VERSION = "NEXUS-v14.2-GWS-AUTOMATION"
 
 app = FastAPI(title="Nexus AI | Intelligence Command Center")
 
@@ -62,6 +62,13 @@ def test_url(url):
     except:
         return False
 
+def test_cmd(cmd):
+    try:
+        subprocess.run(cmd, shell=True, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except:
+        return False
+
 @app.get("/api/status")
 def api_status():
     results = {
@@ -70,6 +77,7 @@ def api_status():
         "crm": test_url(f"http://127.0.0.1:{PORT}/index.html"),
         "evolution_api": test_url("http://127.0.0.1:8080/health"),
         "n8n": test_url("http://127.0.0.1:3100/n8n/healthz"),
+        "gws_cli": test_cmd("gws --version"),
         "nginx": test_tcp("127.0.0.1", PORT)
     }
     
@@ -370,6 +378,7 @@ async def status_dashboard():
                     'supabase': { icon: '🗄️', title: 'Supabase DB' },
                     'n8n': { icon: '🤖', title: 'n8n Engine' },
                     'evolution_api': { icon: '💬', title: 'WhatsApp API' },
+                    'gws_cli': { icon: '💼', title: 'GWS Automation' },
                     'crm': { icon: '🚀', title: 'Nexus CRM' },
                     'nginx': { icon: '🌐', title: 'Gateway' }
                 };

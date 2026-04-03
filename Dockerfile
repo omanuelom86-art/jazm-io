@@ -1,4 +1,4 @@
-# FORCE FULL REBUILD: 2026-04-03T02:22:00 (v12.2-N8N-PERFECT-MATCH)
+# FORCE FULL REBUILD: 2026-04-03T15:05:00 (v14.2-GWS-AUTOMATION)
 FROM atendai/evolution-api:latest
 
 USER root
@@ -12,13 +12,14 @@ RUN echo "Installing system dependencies..." && \
     mkdir -p /var/log/nginx /var/cache/nginx /var/run /run/nginx \
     /var/lib/nginx /var/lib/redis /etc/redis /etc/supervisor/conf.d
 
-# 2. Python & n8n Layer
+# 2. Python & n8n & Google Workspace CLI Layer
 COPY requirements.txt /tmp/requirements.txt
 RUN echo "Installing Python dependencies..." && \
     pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
-    echo "Installing n8n..." && \
-    npm install n8n@1.97.1 -g --omit=dev && \
-    n8n --version > /opt/n8n_v.txt
+    echo "Installing n8n and GWS CLI..." && \
+    npm install n8n@1.97.1 @googleworkspace/cli -g --omit=dev && \
+    n8n --version > /opt/n8n_v.txt && \
+    gws --version > /opt/gws_v.txt
 
 # 3. App Setup
 WORKDIR /opt/nexus
