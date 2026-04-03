@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "jazmio-nexus-automation",
+  "private_key_id": "d2e1c666b68f3d4b9f5105297b6248e191950e81",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDek6cVZyZ2XOzO\njTYDUus5wfrjrIFwkmmfpH1F/vVE3hS0+16gyKavXuuOM4lunXF/WNDOV/EwavJ8\nOpqvh/C5FKS4AwMV8LhW4g8EXNAJk5hIhdxU2Dd2jq1YmHTxrgFQ7fBvWzwBH7lQ\n/M332SAYtxK6ummfaWh1nbDwNlsKiaWcz9SQk3IGXUt/13UKBQgXdw4cj9o5xuOM\nAvIWQLNxXNEQTjT0EjuVczAip16a9C66luwmECNFmZbxNoFjiJp3oAT+YRuM0Ftx\nav5qSDwJggfjgQs8e3j/IQYLTmJJUTm5XLq8hLphSmW8MidQghzUNBU41+S6aYxJ\nyUN5sGLNAgMBAAECggEACY69+81/hlE8Z5MCwPPJLArBxkMJfLCc0bRThZm9vuS2\nb1F+YVmCzUCkzTXQIflBMjgf7axmRZXIe3MplbE45Tzj5Q7w2mFWDE0N9G1nDyVq\nXAeusjbMP7TZI4owacX23BqYWrL7oz5RS9v/NprGDEM+p6WkYXcHFRd3ZwLYHl49\n18Nyd1zCT2VcSaRKmaWSWH1mi4aLEmi3L6oTHIvsPSOtS4SAhfALMK9Ia5OW8tRR\nOjHA8wDOIwL2QGtirM1UXCLsv/nmmUtii9Io7J0qb085mg5+2LeZJaUB+lwURS4P\nRUitcdKHd8ZNh+r28B9186O2OYycTM1h21T7pvVsgQKBgQD9c/XaILkM9zSf3ATo\nagezCQJOLOw3mIOc9tsp/10c0FrmXxxw1e9M2nlUEvrSoKpZJAAWSJ/UPXLCcRGx\nDle7yxMhcjdYkEX/SQIY64iRrA0t1giCPFjZTuxzGWmzqdXp9yLjRGioFv2kOHei\nIjuiqlFKSLVM9ZQWH38KThHBLQKBgQDg0EJn7JpwLfQ2DjOSN0nyD3GCFchnir2N\n5xyA/Mvm3+RGybOEnnU1ukvUaiGE72Jx5WxSjHIUNf19IydaL4exQdaL2I2Ew+yH\nM/icirGPpnYY1K4kURw2vp5ikky6TDwfAWFPTOJof+HXdDgWGg//zbZNzEXK7X0b\n3Fh4YTXsIQKBgELBAPbDeZm1nlGgVFaWXpLEA6xtXoXCEKAN0Gl+TZriMZ7NXCNH\n5XAbdqszGIbTNCqoNbGozRfMW2Zk+2Djwy297br4ZyVXUmhLZVcE6gJcC1iQL8uF\nc21AwTwLbHCagbHOmoy7HsluzL0s9i1o0MYmD6T+A2pSn/83qnEfYMO9AoGANqGl\nYYfXx+cC75fn5GJXL+Gc3dXZS4AlrDQ7cwT7r/E8kg819sZjCVlqUAYyexGJRNBR\n0IWcu1ibbyt5xqrCOMsdDgLj8R2Dfx+cDL6Pg68aB9K3NtAXIR6VcrLGvocEHSzC\nrviqFGbvROJTNtvCg5FD+gfn9fZcbsbPIQHOjsECgYB9ySJ9HwdwTXjMXI3xHMR0\nD16zv5glVrg9xGsBPKM7QIBV52hIVWaHLCFNn+/r8FI+ArHqYhA+JtZ29RU1g/TT\n4QCVbGDQEdg7KT6PdgjIOI4RCwkkygm8167shljS2+WThjdbTI2Ry0Qikfgtpo7m\n8KI9HgubU3TPZepxIJ3eDA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "jazmio-agent@jazmio-nexus-automation.iam.gserviceaccount.com",
+  "client_id": "102668018234124886506",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/jazmio-agent%40jazmio-nexus-automation.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
