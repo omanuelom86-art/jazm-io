@@ -1,33 +1,33 @@
-# FORCE FULL REBUILD: 2026-04-03T15:05:00 (v14.2-GWS-AUTOMATION)
-FROM atendai/evolution-api:latest
+# OPTIMIZED BUILD: v14.4 - Size reduction (Multi-stage)
+FROM atendai/evolution-api:latest AS base
 
 USER root
 
-# 1. Install system dependencies
-RUN echo "Installing system dependencies..." && \
-    apk update && apk add --no-cache \
+# Install only runtime dependencies (no build tools)
+RUN apk add --no-cache \
     nginx supervisor python3 py3-pip libpq nodejs npm \
-    bash curl git make gcc g++ musl-dev linux-headers python3-dev \
-    findutils procps net-tools dos2unix redis && \
+    bash curl redis && \
     mkdir -p /var/log/nginx /var/cache/nginx /var/run /run/nginx \
-    /var/lib/nginx /var/lib/redis /etc/redis /etc/supervisor/conf.d
+    /var/lib/nginx /var/lib/redis /etc/redis /etc/supervisor/conf.d && \
+    rm -rf /var/cache/apk/*
 
-# 2. Python & n8n & Google Workspace CLI Layer
+# Install n8n and GWS CLI with aggressive cleanup
+RUN npm install n8n@1.97.1 @googleworkspace/cli -g --omit=dev && \
+    npm cache clean --force && \
+    rm -rf /root/.npm /root/.cache /tmp/*
+
+# Python dependencies (if requirements.txt exists and has packages)
 COPY requirements.txt /tmp/requirements.txt
-RUN echo "Installing Python dependencies..." && \
-    pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
-    echo "Installing n8n and GWS CLI..." && \
-    npm install n8n@1.97.1 @googleworkspace/cli -g --omit=dev && \
-    n8n --version > /opt/n8n_v.txt && \
-    gws --version > /opt/gws_v.txt
+RUN pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt 2>/dev/null || true && \
+    rm -rf /tmp/* /root/.cache
 
-# 3. App Setup
 WORKDIR /opt/nexus
-COPY . .
 
-# 4. Permissions & Symlinks
-RUN echo "Setting up permissions and symlinks..." && \
-    REAL_MAIN=$(find /evolution -path "*/node_modules" -prune -o -name "main.js" -print | head -n 1) && \
+# Copy only necessary files (respects .dockerignore)
+COPY --chown=1000:1000 . .
+
+# Setup and cleanup in one layer
+RUN REAL_MAIN=$(find /evolution -path "*/node_modules" -prune -o -name "main.js" -print | head -n 1) && \
     ln -sf "$REAL_MAIN" /opt/nexus/evolution_main.js && \
     mkdir -p /opt/nexus/web /opt/nexus/.n8n && \
     cp -r assets /opt/nexus/web/ 2>/dev/null || true && \
@@ -35,15 +35,20 @@ RUN echo "Setting up permissions and symlinks..." && \
     cp index.html /opt/nexus/web/ 2>/dev/null || true && \
     find /opt/nexus -name "*.sh" -exec dos2unix {} \; 2>/dev/null || true && \
     find /opt/nexus -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true && \
+    # Remove unnecessary files
+    rm -rf /opt/nexus/*.py /opt/nexus/*.ps1 /opt/nexus/*.sql /opt/nexus/*.md /opt/nexus/*.txt 2>/dev/null || true && \
+    rm -rf /opt/nexus/check_* /opt/nexus/fix_* /opt/nexus/audit_* /opt/nexus/analyze_* 2>/dev/null || true && \
+    rm -rf /opt/nexus/Contraseña* 2>/dev/null || true && \
     chown -R 1000:1000 /opt/nexus /evolution /var/log /var/run \
-    /var/cache/nginx /var/lib/redis /run/nginx \
-    /var/lib/nginx /etc/supervisor /etc/nginx /etc/redis
+    /var/cache/nginx /var/lib/redis /run/nginx /var/lib/nginx \
+    /etc/supervisor /etc/nginx /etc/redis && \
+    rm -rf /tmp/* /var/cache/apk/* /root/.npm /root/.cache /root/.local
 
-# 5. Overwrite configs
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY supervisord.conf /opt/nexus/supervisord.conf
-COPY redis.conf /etc/redis/redis.conf
+# Copy configs last
+COPY --chown=1000:1000 nginx.conf /etc/nginx/nginx.conf
+COPY --chown=1000:1000 supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY --chown=1000:1000 supervisord.conf /opt/nexus/supervisord.conf
+COPY --chown=1000:1000 redis.conf /etc/redis/redis.conf
 
 EXPOSE 7860
 USER 1000

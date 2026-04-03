@@ -45,6 +45,16 @@ error.log
 .dockerignore
 docker-compose.yml
 
+# LARGE DIRECTORIES NOT NEEDED IN CONTAINER
+Conectores n8n MCP/
+Herramientas Google Workspace/
+Habilidades n8n/
+agentes AI de marketing/
+Plantillas Maestras n8n/
+jazm-io/
+jazmio-keepalive Railway/
+n8n agente/
+
 # WORKFLOWS & N8N
 .n8n/
 n8n-workflows/
