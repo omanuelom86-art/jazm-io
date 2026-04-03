@@ -1,25 +1,17 @@
 #!/bin/bash
 export N8N_PORT="3100"
-export N8N_PATH="/n8n/"
+# Eliminamos N8N_PATH para evitar bugs de assets de n8n v1.x
+unset N8N_PATH
 export N8N_LISTEN_ADDRESS="0.0.0.0"
 export N8N_ENCRYPTION_KEY="nexus_secret_key"
 export N8N_USER_FOLDER="/opt/nexus/.n8n"
 export HOME="/opt/nexus"
-export N8N_PROTOCOL="https"
-export N8N_HOST="0.0.0.0"
+export N8N_PROTOCOL="http"
+export N8N_HOST="127.0.0.1"
 export WEBHOOK_URL="https://jazm-io-production.up.railway.app/n8n/"
 export N8N_EDITOR_BASE_URL="https://jazm-io-production.up.railway.app/n8n/"
-export N8N_LOG_LEVEL="info"
-export N8N_BLOCK_IFRAME_ACCESS="false"
-export DB_TYPE="postgresdb"
-export DB_POSTGRESDB_HOST="aws-0-us-west-2.pooler.supabase.com"
-export DB_POSTGRESDB_PORT="5432"
-export DB_POSTGRESDB_DATABASE="postgres"
-export DB_POSTGRESDB_USER="postgres.htabdguydyysolkzdilm"
-export DB_POSTGRESDB_PASSWORD="*Mm0101mM****"
-export DB_POSTGRESDB_SCHEMA="n8n"
-export DB_POSTGRESDB_SSL="true"
-export DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED="false"
+# Variables críticas para que el frontend sepa dónde está
+export VUE_APP_URL_BASE_API="https://jazm-io-production.up.railway.app/n8n/"
 
-echo ">>> Starting n8n v1.x (Audit v13.0 - Perfect Path Mode)"
+echo ">>> Starting n8n in ROOT MODE (v14.0 - Strip Prefix Strategy)"
 n8n start
