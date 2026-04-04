@@ -17,6 +17,10 @@ export HOME="/opt/nexus"
 export N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS="false"
 export N8N_BLOCK_FS_WRITE_ACCESS="false"
 
+# 3. 🛡️ Inyección de Nodos de Inteligencia (v16.5)
+echo ">>> Instalando Nodos de IA (Groq y MCP Connector)..."
+npm install -g n8n-nodes-mcp-connector n8n-nodes-groq --omit=dev || echo "Instalación de nodos omitida o ya realizada."
+
 python3 /opt/nexus/setup_gws.py || echo "GWS setup skipped."
 
 # 4. 🧹 Importación Masiva de Innovación (Protocolo de Carga Total)
