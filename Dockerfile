@@ -19,4 +19,5 @@ RUN chmod +x *.sh && \
 
 EXPOSE 7860
 USER 1000
-CMD ["/usr/bin/supervisord", "-c", "/opt/nexus/supervisord.conf"]
+# FORCED START: v14.9 - Bypassing image wrappers
+CMD ["supervisord", "-n", "-c", "/opt/nexus/supervisord.conf"]
