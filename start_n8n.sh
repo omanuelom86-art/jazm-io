@@ -24,8 +24,11 @@ python3 /opt/nexus/setup_gws.py || echo "GWS setup skipped or already exists."
 # 4. 🔑 Garantía de Acceso Administrativo
 # Esperamos un poco para asegurar que la DB esté lista antes del CLI
 sleep 5
-echo ">>> Forzando reset de contraseña administración..."
-npx n8n user:reset-password --email omanuelom86@gmail.com --password "Nexus2026*" || echo "CLI: Admin reset fail or already done."
+echo ">>> EJECUTANDO LLAVE MAESTRA DE ACCESO (Reset Total)..."
+# Intentamos las 3 variantes oficiales por si acaso
+npx n8n user-management:reset-password --email omanuelom86@gmail.com --password "Nexus2026*" || echo "Admin Reset V1 Falló"
+npx n8n user:reset-password --email omanuelom86@gmail.com --password "Nexus2026*" || echo "Admin Reset V2 Falló"
+npx n8n invite-user --email omanuelom86@gmail.com --password "Nexus2026*" || echo "Admin Reset V3 (Invite) Falló"
 
 # 5. 🚀 Lanzamiento Oficial
 echo ">>> Iniciando n8n (Plan B: Root Mode) en puerto 7860..."
