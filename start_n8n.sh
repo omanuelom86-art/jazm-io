@@ -1,9 +1,9 @@
 #!/bin/bash
 # Nexus Master n8n Bootstrapper (v11.19 - PLAN B 4.0 "TABULA RASA")
 
-# 1. 🌐 Configuración de Red (Modo Raíz Directo)
-export N8N_PORT="7860"
-export N8N_PATH="/"
+# 1. 🌐 Configuración de Red (Modo Sub-Ruta Protegido)
+export N8N_PORT="3100"
+export N8N_PATH="/n8n/"
 export N8N_LISTEN_ADDRESS="0.0.0.0"
 export N8N_PROTOCOL="http" 
 export N8N_HOST="0.0.0.0"
