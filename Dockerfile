@@ -19,7 +19,7 @@ COPY . .
 ENTRYPOINT []
 
 RUN chmod +x *.sh && \
-    mkdir -p /opt/nexus/web /opt/nexus/.n8n /opt/nexus/blueprints && \
+    mkdir -p /opt/nexus/web /opt/nexus/.n8n /opt/nexus/blueprints /opt/nexus/redis && \
     chown -R 1000:1000 /opt/nexus /evolution
 
 EXPOSE 7860
