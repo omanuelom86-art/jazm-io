@@ -16,9 +16,9 @@ RUN npm install n8n@1.97.1 @googleworkspace/cli -g --omit=dev && \
     npm cache clean --force && \
     rm -rf /root/.npm /root/.cache /tmp/*
 
-# Python dependencies (if requirements.txt exists and has packages)
+# Python dependencies (Ensure requests and psycopg2 work)
 COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt 2>/dev/null || true && \
+RUN pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
     rm -rf /tmp/* /root/.cache
 
 WORKDIR /opt/nexus
@@ -35,8 +35,8 @@ RUN REAL_MAIN=$(find /evolution -path "*/node_modules" -prune -o -name "main.js"
     cp index.html /opt/nexus/web/ 2>/dev/null || true && \
     find /opt/nexus -name "*.sh" -exec dos2unix {} \; 2>/dev/null || true && \
     find /opt/nexus -name "*.sh" -exec chmod +x {} \; 2>/dev/null || true && \
-    # Remove unnecessary files
-    rm -rf /opt/nexus/*.py /opt/nexus/*.ps1 /opt/nexus/*.sql /opt/nexus/*.md /opt/nexus/*.txt 2>/dev/null || true && \
+    # Remove unnecessary files (but keep crucial .py for status)
+    rm -rf /opt/nexus/*.ps1 /opt/nexus/*.sql /opt/nexus/*.md /opt/nexus/*.txt 2>/dev/null || true && \
     rm -rf /opt/nexus/check_* /opt/nexus/fix_* /opt/nexus/audit_* /opt/nexus/analyze_* 2>/dev/null || true && \
     rm -rf /opt/nexus/Contraseña* 2>/dev/null || true && \
     chown -R 1000:1000 /opt/nexus /evolution /var/log /var/run \
