@@ -11,15 +11,17 @@ RUN apk add --no-cache \
     /var/lib/nginx /var/lib/redis /etc/redis /etc/supervisor/conf.d && \
     rm -rf /var/cache/apk/*
 
-# Install n8n and GWS CLI with aggressive cleanup
+# Python dependencies (Early layer for robustness)
+COPY requirements.txt /opt/nexus/requirements.txt
+
+# Install n8n and GWS CLI
 RUN npm install n8n@1.97.1 @googleworkspace/cli -g --omit=dev && \
     npm cache clean --force && \
     rm -rf /root/.npm /root/.cache /tmp/*
 
 # Python dependencies (Ensure requests and psycopg2 work)
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install --break-system-packages --no-cache-dir -r /tmp/requirements.txt && \
-    rm -rf /tmp/* /root/.cache
+RUN pip3 install --break-system-packages --no-cache-dir -r /opt/nexus/requirements.txt && \
+    rm -rf /root/.cache
 
 WORKDIR /opt/nexus
 
