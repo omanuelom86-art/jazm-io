@@ -6,7 +6,7 @@ USER root
 # Install only runtime dependencies (no build tools)
 RUN apk add --no-cache \
     nginx supervisor python3 py3-pip libpq nodejs npm \
-    bash curl redis && \
+    bash curl redis dos2unix && \
     mkdir -p /var/log/nginx /var/cache/nginx /var/run /run/nginx \
     /var/lib/nginx /var/lib/redis /etc/redis /etc/supervisor/conf.d && \
     rm -rf /var/cache/apk/*
