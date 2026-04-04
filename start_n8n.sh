@@ -17,14 +17,12 @@ export HOME="/opt/nexus"
 export N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS="false"
 export N8N_BLOCK_FS_WRITE_ACCESS="false"
 
-# 3. 🧠 Setup de Agentes IA
-echo ">>> Configurando entorno de Agentes..."
 python3 /opt/nexus/setup_gws.py || echo "GWS setup skipped."
 
-# 4. 🧹 Limpieza de Usuarios (Protocolo Tabula Rasa - FORZAR REGISTRO)
-echo ">>> Limpiando base de datos para habilitar registro nuevo..."
-# Borramos los usuarios existentes en Supabase para que n8n muestre la pantalla de "Crea tu Cuenta" al entrar.
-PGPASSWORD="*Mm0101mM****" psql -h aws-0-us-west-2.pooler.supabase.com -p 5432 -U postgres.htabdguydyysolkzdilm -d postgres -c "DELETE FROM \"user\";" || echo "SQL: Tabla de usuarios no encontrada o limpia."
+# 4. 🧹 Importación Masiva de Innovación (Protocolo de Carga Total)
+echo ">>> Importando Flujos Maestros desde Blueprints..."
+# Importamos todos los flujos de la carpeta de plantillas de forma individual
+n8n import:workflow --separate /opt/nexus/blueprints/ || echo "Carga de flujos omitida o ya realizada."
 
 # 5. 🚀 Lanzamiento Oficial Atómico
 echo ">>> Iniciando n8n (Plan B 4.0: Fresh Start) en puerto 7860..."

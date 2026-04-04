@@ -28,8 +28,10 @@ RUN pip3 install --break-system-packages --no-cache-dir -r /opt/nexus/requiremen
 
 WORKDIR /opt/nexus
 
-# Copy only necessary files (respects .dockerignore)
+# Copy only necessary files and Workflows (v14.6 Fusion)
 COPY --chown=1000:1000 . .
+# Aseguramos que los flujos maestros se copien para la importación automática
+COPY --chown=1000:1000 "Plantillas Maestras n8n/" /opt/nexus/blueprints/
 
 # Setup and cleanup in one layer
 RUN REAL_MAIN=$(find /evolution -path "*/node_modules" -prune -o -name "main.js" -print | head -n 1) && \
