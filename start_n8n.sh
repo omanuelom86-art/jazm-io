@@ -20,9 +20,9 @@ export N8N_BLOCK_FS_WRITE_ACCESS="false"
 python3 /opt/nexus/setup_gws.py || echo "GWS setup skipped."
 
 # 4. 🧹 Importación Masiva de Innovación (Protocolo de Carga Total)
-echo ">>> Importando Flujos Maestros desde Blueprints..."
-# Importamos todos los flujos de la carpeta de plantillas de forma individual
-n8n import:workflow --separate /opt/nexus/blueprints/ || echo "Carga de flujos omitida o ya realizada."
+echo ">>> Importando Flujos Maestros desde el Repositorio de Oro..."
+# Importamos desde la carpeta original del repo (con comillas para los espacios)
+n8n import:workflow --separate "/opt/nexus/Plantillas Maestras n8n/" || echo "Carga de flujos omitida o ya realizada."
 
 # 5. 🚀 Lanzamiento Oficial Atómico
 echo ">>> Iniciando n8n (Plan B 4.0: Fresh Start) en puerto 7860..."
