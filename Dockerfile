@@ -14,11 +14,8 @@ RUN apk add --no-cache \
 # Python dependencies (Early layer for robustness)
 COPY requirements.txt /opt/nexus/requirements.txt
 
-# Install n8n, GWS CLI and Community Nodes (v14.5 Fusion)
-RUN npm install n8n@1.97.1 \
-    @googleworkspace/cli \
-    n8n-nodes-mcp-connector \
-    n8n-nodes-groq -g --omit=dev && \
+# Install n8n and GWS CLI (v14.7 Stable Only)
+RUN npm install n8n@1.97.1 @googleworkspace/cli -g --omit=dev && \
     npm cache clean --force && \
     rm -rf /root/.npm /root/.cache /tmp/*
 
