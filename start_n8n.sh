@@ -1,8 +1,8 @@
 #!/bin/bash
-# Nexus Master n8n Bootstrapper (v11.20 - RUNTIME FIX v34.3)
+# Nexus Master n8n Bootstrapper (v11.21 - RUNTIME PREFIX FORCER)
 
-# 0. 🛠️ Reparación de Permisos de Puerta (Nginx)
-mkdir -p /tmp/nginx/logs /tmp/nginx/tmp
+# 0. 🛠️ Reparación de Permisos en Caliente de la Puerta (Nginx)
+mkdir -p /tmp/nginx/logs /tmp/nginx/tmp /tmp/nginx/conf
 chmod -R 777 /tmp/nginx
 export N8N_LISTEN_ADDRESS="127.0.0.1"
 export N8N_PROTOCOL="http" 
