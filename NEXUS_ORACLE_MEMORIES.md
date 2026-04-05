@@ -44,6 +44,16 @@ Este documento es la "Caja Negra" y el "Manual de Guerra" de Jazm.io. Contiene l
   * Usar `stdout_logfile_maxbytes=0` en todos los procesos de Supervisord.
   * **LECCIÓN**: Estabilidad sobre volumen de logs.
 
+#### 5. LA CRISIS DEL MIME TYPE (N8N EN SUBPATH)
+
+* **Error**: Pantalla en blanco en `/n8n/`, errores de consola `Refused to apply style... MIME type ('text/html') is not a supported stylesheet`.
+* **Causa Real**: El bloque `location /` del CRM capturaba las peticiones de assets de n8n (ej: `/n8n/assets/index.js`) y servía el `index.html` del CRM (fallback `try_files`) porque las reglas estándar de Nginx no tenían prioridad suficiente.
+* **Solución Maestra (Plan B 45.0)**:
+  * Usar `location ^~ /n8n/` para dar **PRIORIDAD ABSOLUTA** sobre el CRM.
+  * Configurar `proxy_pass http://127.0.0.1:3100/;` (con slash final) para hacer el *strip prefix* automático de Nginx.
+  * Definir `N8N_PATH` vacío o no definirlo (n8n corre en raíz `/` internamente) y avisarle su URL pública con `proxy_set_header X-Forwarded-Prefix /n8n`.
+  * **LECCIÓN**: El operador `^~` es vital para aislar microservicios en subrutas cuando hay un fallback de Single Page Application (SPA) en la raíz.
+
 ---
 
 ### 🛠️ COMANDOS DE CONSULTA (EL AGENTE NEXUS ORACLE)
