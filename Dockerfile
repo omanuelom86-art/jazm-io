@@ -3,8 +3,8 @@ FROM atendai/evolution-api:latest
 
 USER root
 
-# 1. Limpieza y preparación (Alpine nativo v16.2 + Voice Engine)
-RUN apk add --no-cache nginx supervisor python3 py3-requests bash curl nodejs npm dos2unix redis
+# 1. Limpieza y preparación (Alpine nativo v16.3 + DB Voice)
+RUN apk add --no-cache nginx supervisor python3 py3-requests py3-psycopg2 bash curl nodejs npm dos2unix redis
 
 # 2. Instalación de n8n (Sin caché innecesaria para no pesar)
 RUN npm install n8n@1.97.1 -g --omit=dev && \
@@ -20,7 +20,8 @@ ENTRYPOINT []
 
 RUN chmod +x *.sh && \
     mkdir -p /opt/nexus/web /opt/nexus/.n8n /opt/nexus/blueprints /opt/nexus/redis && \
-    chown -R 1000:1000 /opt/nexus /evolution
+    mkdir -p /tmp/nginx/logs /tmp/nginx/tmp && \
+    chown -R 1000:1000 /opt/nexus /evolution /tmp/nginx
 
 EXPOSE 7860
 USER 1000
