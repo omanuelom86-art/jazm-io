@@ -5,7 +5,7 @@
 mkdir -p /tmp/nginx/logs /tmp/nginx/tmp /tmp/nginx/conf
 chmod -R 777 /tmp/nginx
 chmod -R 755 /opt/nexus/web
-export N8N_LISTEN_ADDRESS="127.0.0.1"
+export N8N_LISTEN_ADDRESS="0.0.0.0"
 export N8N_PROTOCOL="http" 
 export N8N_HOST="0.0.0.0"
 export WEBHOOK_URL="https://jazm-io-production.up.railway.app/"
