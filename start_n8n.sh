@@ -9,7 +9,9 @@ export N8N_LISTEN_ADDRESS="0.0.0.0"
 export N8N_PROTOCOL="http"
 export N8N_HOST="0.0.0.0"
 export N8N_PORT="3100"
-export N8N_PATH="/n8n/"
+# N8N_PATH NO se define -> n8n corre en raiz (/)
+# Nginx hace strip del prefix /n8n/ antes de pasar al proxy
+# X-Forwarded-Prefix=/n8n le indica a n8n su URL publica
 export WEBHOOK_URL="https://jazm-io-production.up.railway.app/n8n/"
 export N8N_EDITOR_BASE_URL="https://jazm-io-production.up.railway.app/n8n/"
 
