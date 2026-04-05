@@ -24,6 +24,11 @@ ENTRYPOINT []
 RUN chmod +x *.sh && \
     mkdir -p /opt/nexus/web /opt/nexus/.n8n /opt/nexus/blueprints /opt/nexus/redis && \
     mkdir -p /tmp/nginx/logs /tmp/nginx/tmp && \
+    mv assets /opt/nexus/web/ 2>/dev/null || true && \
+    mv manager /opt/nexus/web/ 2>/dev/null || true && \
+    mv nexus-assets /opt/nexus/web/ 2>/dev/null || true && \
+    mv index.html /opt/nexus/web/ 2>/dev/null || true && \
+    mv favicon.svg /opt/nexus/web/ 2>/dev/null || true && \
     chown -R 1000:1000 /opt/nexus /evolution /tmp/nginx
 
 EXPOSE 7860
