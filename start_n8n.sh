@@ -1,9 +1,9 @@
 #!/bin/bash
-# Nexus Master n8n Bootstrapper (v11.19 - PLAN B 4.0 "TABULA RASA")
+# Nexus Master n8n Bootstrapper (v11.20 - RUNTIME FIX v34.3)
 
-# 1. 🌐 Configuración de Red (Modo Sub-Ruta Protegido)
-export N8N_PORT="3100"
-export N8N_PATH="/n8n/"
+# 0. 🛠️ Reparación de Permisos de Puerta (Nginx)
+mkdir -p /tmp/nginx/logs /tmp/nginx/tmp
+chmod -R 777 /tmp/nginx
 export N8N_LISTEN_ADDRESS="127.0.0.1"
 export N8N_PROTOCOL="http" 
 export N8N_HOST="0.0.0.0"
