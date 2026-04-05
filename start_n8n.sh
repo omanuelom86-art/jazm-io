@@ -1,9 +1,10 @@
 #!/bin/bash
-# Nexus Master n8n Bootstrapper (v11.21 - RUNTIME PREFIX FORCER)
+# Nexus Master n8n Bootstrapper (v11.22 - PERMISSION LIBERATOR)
 
-# 0. 🛠️ Reparación de Permisos en Caliente de la Puerta (Nginx)
+# 0. 🛠️ Reparación de Permisos en Caliente
 mkdir -p /tmp/nginx/logs /tmp/nginx/tmp /tmp/nginx/conf
 chmod -R 777 /tmp/nginx
+chmod -R 755 /opt/nexus/web
 export N8N_LISTEN_ADDRESS="127.0.0.1"
 export N8N_PROTOCOL="http" 
 export N8N_HOST="0.0.0.0"
