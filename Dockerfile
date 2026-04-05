@@ -3,8 +3,11 @@ FROM atendai/evolution-api:latest
 
 USER root
 
-# 1. Limpieza y preparación (Alpine nativo v16.4 + Full Monitor)
-RUN apk add --no-cache nginx supervisor python3 py3-requests py3-psycopg2 py3-fastapi uvicorn bash curl nodejs npm dos2unix redis
+# 1. Limpieza y preparación (Alpine nativo v16.5 - RESCUE MODE)
+RUN apk add --no-cache nginx supervisor python3 py3-pip bash curl nodejs npm dos2unix redis postgresql-dev gcc python3-dev musl-dev
+
+# 1.1 Instalación de Voz y Monitor (Pip nativo)
+RUN pip3 install --no-cache-dir fastapi uvicorn requests psycopg2-binary
 
 # 2. Instalación de n8n (Sin caché innecesaria para no pesar)
 RUN npm install n8n@1.97.1 -g --omit=dev && \
