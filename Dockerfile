@@ -3,8 +3,8 @@ FROM atendai/evolution-api:latest
 
 USER root
 
-# 1. Limpieza y preparación (Alpine nativo v16.1)
-RUN apk add --no-cache nginx supervisor python3 bash curl nodejs npm dos2unix redis
+# 1. Limpieza y preparación (Alpine nativo v16.2 + Voice Engine)
+RUN apk add --no-cache nginx supervisor python3 py3-requests bash curl nodejs npm dos2unix redis
 
 # 2. Instalación de n8n (Sin caché innecesaria para no pesar)
 RUN npm install n8n@1.97.1 -g --omit=dev && \
