@@ -1,7 +1,18 @@
 #!/bin/bash
 
-# 1. Configuración de Evolution API
+# --- NEXUS STARTUP MANAGER: EVOLUTION API ---
 echo "--- NEXUS STARTUP MANAGER ---"
+
+# 1. Cargar variables desde .env si existe
+if [ -f "/opt/nexus/.env" ]; then
+    echo "✅ Cargando variables de .env..."
+    export $(grep -v '^#' /opt/nexus/.env | xargs)
+fi
+
+# 2. Configuración Forzada de Identidad Evolution
+export AUTHENTICATION_TYPE="apikey"
+export AUTHENTICATION_API_KEY="Supera"
+export AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES="true"
 
 # Detectar REAL_MAIN de Evolution
 POSSIBLE_PATHS=(
@@ -25,18 +36,16 @@ fi
 
 echo "✅ Entrypoint: $REAL_MAIN"
 
-# Determinar APP_ROOT (donde están node_modules y package.json)
+# Determinar APP_ROOT
 if [[ "$REAL_MAIN" == *"/evolution/"* ]]; then
     APP_ROOT="/evolution"
 else
     APP_ROOT=$(dirname $(dirname "$REAL_MAIN"))
-    # Si sigue sin haber node_modules, subir un nivel más
     if [ ! -d "$APP_ROOT/node_modules" ]; then
         APP_ROOT=$(dirname "$APP_ROOT")
     fi
 fi
 
-# FALLBACK TOTAL
 if [ ! -d "$APP_ROOT/node_modules" ]; then
     APP_ROOT="/evolution"
 fi
@@ -52,34 +61,28 @@ chmod 666 "$LOG_FILE"
 # Loop de arranque
 while true; do
     echo "--- Starting Node $(node -v) ---" | tee -a "$LOG_FILE"
-    # Forzamos DATABASE_CONNECTION_URI y DATABASE_URL - Session Pooler (IPv4 Compatible)
+    
+    # Forzamos DATABASE_CONNECTION_URI y DATABASE_URL
     export DATABASE_CONNECTION_URI="postgresql://postgres.htabdguydyysolkzdilm:%2AMm0101mM%2A%2A%2A%2A@aws-0-us-west-2.pooler.supabase.com:5432/postgres?schema=evolution_api"
     export DATABASE_URL="$DATABASE_CONNECTION_URI"
+    export DATABASE_ENABLED="true"
     
     echo "--- Sincronizando Base de Datos (Prisma) ---" | tee -a "$LOG_FILE"    
-    # Buscamos el schema.prisma si no está en el WD actual
     PRISMA_SCHEMA=$(find . -name schema.prisma | head -n 1)
     if [ -z "$PRISMA_SCHEMA" ]; then
         PRISMA_SCHEMA=$(find /evolution -name schema.prisma | head -n 1)
     fi
 
     echo "✅ Usando schema: $PRISMA_SCHEMA" | tee -a "$LOG_FILE"
-    # Añadir timeout para evitar bloqueo infinito
     timeout 60s npx prisma db push --schema="$PRISMA_SCHEMA" --accept-data-loss --skip-generate 2>&1 | tee -a "$LOG_FILE"
-    PRISMA_RET=$?
-    if [ $PRISMA_RET -eq 124 ]; then
-        echo "❌ Prisma db push timed out (60s). Saltando para intentar arrancar la app..." | tee -a "$LOG_FILE"
-    elif [ $PRISMA_RET -ne 0 ]; then
-        echo "⚠️ Prisma db push falló con código $PRISMA_RET. Intentando arrancar de todos modos..." | tee -a "$LOG_FILE"
-    fi
     
-    echo "🚀 Iniciando Proceso Node..." | tee -a "$LOG_FILE"
+    echo "🚀 Iniciando Proceso Node con API_KEY: Supera" | tee -a "$LOG_FILE"
     node "$REAL_MAIN" 2>&1 | tee -a "$LOG_FILE"
     RET=$?
     echo "--- Node exited with code $RET ---" | tee -a "$LOG_FILE"
     
     if [ $RET -eq 0 ]; then
-        echo "⚠️ Exit status 0 detected but it should be a long-running process. Re-trying with 'npm start'..." | tee -a "$LOG_FILE"
+        echo "⚠️ Exit status 0 detected. Re-trying with 'npm start'..." | tee -a "$LOG_FILE"
         npm start 2>&1 | tee -a "$LOG_FILE"
         sleep 5
     fi
