@@ -1,4 +1,4 @@
-# JAZMIO MASTER PLATINUM: v17.0 - RESTAURACIÓN DE CÓDIGO MAESTRO
+# JAZMIO MASTER PLATINUM: v20.0 - RESTAURACIÓN TOTAL SIN CRASH
 FROM evoapicloud/evolution-api:latest
 
 USER root
@@ -13,13 +13,11 @@ RUN apk add --no-cache nginx supervisor python3 py3-pip bash curl nodejs npm dos
 
 WORKDIR /opt/nexus
 
-# 2. RESTAURACIÓN CRÍTICA: Limpiar el contenedor antes de clonar el código REAL del usuario
-# Esto borra mis "stubs" y trae el CRM, Prospecting, Kanban y n8n real.
+# 2. Restauración de Código y Permisos
 RUN rm -rf * && \
     git clone https://github.com/omanuelom86-art/jazm-io . && \
     chmod +x *.sh && \
-    mkdir -p /opt/nexus/web /opt/nexus/.n8n /tmp/nginx/logs /tmp/nginx/tmp && \
-    # Mover archivos estáticos cargados en el repo original del usuario
+    mkdir -p /opt/nexus/web /opt/nexus/.n8n /tmp/nginx/logs /tmp/nginx/tmp /opt/nexus/redis && \
     cp -r assets/* /opt/nexus/web/ 2>/dev/null || true && \
     cp -r manager/* /opt/nexus/web/ 2>/dev/null || true && \
     cp -r nexus-assets/* /opt/nexus/web/ 2>/dev/null || true && \
@@ -30,5 +28,5 @@ RUN rm -rf * && \
 EXPOSE 7860
 USER 1000
 
-# 3. Arranque supervisado
-CMD ["/usr/bin/supervisord", "-n", "-c", "/opt/nexus/supervisord.conf"]
+# 3. Arranque Atómico (Eliminamos Supervisor Conflictivo)
+CMD ["/bin/bash", "entrypoint.sh"]
