@@ -23,15 +23,14 @@ export N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS="false"
 export N8N_BLOCK_FS_WRITE_ACCESS="false"
 
 # 3. 🛡️ Inyección de Nodos de Inteligencia (v16.5)
-echo ">>> Instalando Nodos de IA (Groq y MCP Connector)..."
-npm install -g n8n-nodes-mcp-connector n8n-nodes-groq --omit=dev || echo "Instalación de nodos omitida o ya realizada."
+echo ">>> Intentando instalar nodos (timeout 30s)..."
+timeout 30s npm install -g n8n-nodes-mcp-connector n8n-nodes-groq --omit=dev || echo ">>> [SKIP] Instalación de nodos falló o excedió tiempo."
 
-python3 /opt/nexus/setup_gws.py || echo "GWS setup skipped."
+python3 /opt/nexus/setup_gws.py || echo ">>> [SKIP] GWS setup skipped."
 
-# 4. 🧹 Importación Masiva de Innovación (Protocolo de Carga Total)
-echo ">>> Importando Flujos Maestros desde el Repositorio de Oro..."
-# Importamos desde la carpeta original del repo (con comillas para los espacios)
-n8n import:workflow --separate "/opt/nexus/Plantillas Maestras n8n/" || echo "Carga de flujos omitida o ya realizada."
+# 4. 🧹 Importación Masiva de Flujos
+echo ">>> Importando flujos maestros (timeout 10s)..."
+timeout 10s n8n import:workflow --separate "/opt/nexus/Plantillas Maestras n8n/" || echo ">>> [SKIP] Carga de flujos omitida."
 
 # 5. 🚀 Lanzamiento Oficial Atómico
 echo ">>> Iniciando n8n (Plan B 4.0: Fresh Start) en puerto 7860..."
