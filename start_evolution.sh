@@ -13,7 +13,13 @@ fi
 export AUTHENTICATION_TYPE="apikey"
 export AUTHENTICATION_API_KEY="Supera"
 export AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES="true"
-export CONFIG_SESSION_PHONE_VERSION="2.2413.51"
+
+# Parches Comprobados por la Comunidad para Evolution v2 en entornos cloud
+export CONFIG_SESSION_PHONE_VERSION="2.3000.1028450369"
+export NODE_OPTIONS="--network-family-autoselection-attempt-timeout=1000"
+export CACHE_REDIS_ENABLED="true"
+export CACHE_REDIS_URI="redis://127.0.0.1:6379/1"
+export CACHE_REDIS_PREFIX_KEY="evolution"
 
 # Detectar REAL_MAIN de Evolution
 POSSIBLE_PATHS=(
