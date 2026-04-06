@@ -1,5 +1,5 @@
 # JAZMIO SLIM: v16.0 - REDUCCIÓN DE PESO Y ARRANQUE PURO
-FROM atendai/evolution-api:latest
+FROM evoapicloud/evolution-api:latest
 
 USER root
 
