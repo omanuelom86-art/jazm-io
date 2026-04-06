@@ -54,6 +54,19 @@ Este documento es la "Caja Negra" y el "Manual de Guerra" de Jazm.io. Contiene l
   * Definir `N8N_PATH` vacío o no definirlo (n8n corre en raíz `/` internamente) y avisarle su URL pública con `proxy_set_header X-Forwarded-Prefix /n8n`.
   * **LECCIÓN**: El operador `^~` es vital para aislar microservicios en subrutas cuando hay un fallback de Single Page Application (SPA) en la raíz.
 
+#### 6. LA CRISIS DE WHATSAPP Y EL DOCKER PESADO (EVOLUTION API V2)
+
+* **Error**: Evolution API se quedaba "conectando" y crasheaba en silencio pasados 10 segundos, no arrojaba QR. Además, al intentar actualizar, el build en Railway fallaba con: `Image of size 4.1 GB exceeded limit of 4.0 GB`.
+* **Causa Real**:
+    1. La imagen base del `Dockerfile` estaba apuntando a `atendai/evolution-api:latest`, un repositorio abandonado y obsoleto. Los protocolos de WhatsApp Web cambiaron, por lo que Baileys era rechazado inmediatamente al intentar crear la sesión.
+    2. El nuevo repositorio, `evoapicloud/evolution-api:latest`, es mucho más pesado y excedía el límite gratuito de Railway de 4.0 GB.
+    3. Hubo caracteres invisibles UTF-16 inyectados en `.dockerignore` al usar `echo` en terminales de Windows.
+* **Solución Maestra (Plan B 60.0)**:
+  * Sustituir la imagen base por `FROM evoapicloud/evolution-api:latest`.
+  * **Dieta Estricta de Docker**: Utilizar el patrón de Alpine `--virtual .build-deps` para instalar `gcc`, `python3-dev`, y `musl-dev` DE FORMA TEMPORAL, instalar paquetes PIP (`psycopg2-binary`), y luego eliminar la capa de compiladores con `apk del .build-deps`. Esto ahorró más de 400 MB.
+  * Asegurar que `.dockerignore` tenga codificación UTF-8 pura.
+  * **LECCIÓN**: Los motores de WhatsApp caducan rápido y requieren su registro docker oficial actual. En entornos con límites de disco, los compiladores de C++ nunca deben permanecer en la imagen final.
+
 ---
 
 ### 🛠️ COMANDOS DE CONSULTA (EL AGENTE NEXUS ORACLE)
