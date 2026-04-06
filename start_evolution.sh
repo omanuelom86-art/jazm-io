@@ -20,6 +20,7 @@ export NODE_OPTIONS="--network-family-autoselection-attempt-timeout=1000"
 export CACHE_REDIS_ENABLED="true"
 export CACHE_REDIS_URI="redis://127.0.0.1:6379/1"
 export CACHE_REDIS_PREFIX_KEY="evolution"
+export LOG_LEVEL="ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS"
 
 # Detectar REAL_MAIN de Evolution
 POSSIBLE_PATHS=(
