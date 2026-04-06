@@ -1,16 +1,14 @@
 #!/bin/bash
-# --- NEXUS STARTUP MANAGER: EVOLUTION API (v2.0 ESTABLE) ---
+# --- NEXUS STARTUP MANAGER: EVOLUTION API (v3.0 RAILWAY SAFE) ---
 echo "--- NEXUS STARTUP MANAGER: EVOLUTION API ---"
-
-set -e
 
 # 1. Cargar variables desde .env si existe
 if [ -f "/opt/nexus/.env" ]; then
-    echo "✅ Cargando variables de .env..."
+    echo "[INFO] Loading variables from .env..."
     export $(grep -v '^#' /opt/nexus/.env | xargs)
 fi
 
-# 2. Configuración Forzada de Identidad Evolution
+# 2. Configuracion Forzada de Identidad Evolution
 export AUTHENTICATION_TYPE="apikey"
 export AUTHENTICATION_API_KEY="Supera"
 export AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES="true"
@@ -47,11 +45,11 @@ if [ -z "$REAL_MAIN" ]; then
 fi
 
 if [ -z "$REAL_MAIN" ]; then
-    echo "❌ ERROR: No se encontro el archivo main.js de Evolution API"
+    echo "[ERROR] Could not find Evolution API main.js"
     exit 1
 fi
 
-echo "✅ Entrypoint: $REAL_MAIN"
+echo "[INFO] Entrypoint: $REAL_MAIN"
 
 # Determinar APP_ROOT
 if [[ "$REAL_MAIN" == *"/evolution/"* ]]; then
@@ -67,7 +65,7 @@ if [ ! -d "$APP_ROOT/node_modules" ]; then
     APP_ROOT="/evolution"
 fi
 
-echo "✅ WD: $APP_ROOT"
+echo "[INFO] Working directory: $APP_ROOT"
 cd "$APP_ROOT"
 
 # Log evolution
@@ -76,20 +74,20 @@ mkdir -p /opt/nexus/web
 echo "--- NEW START $(date) ---" > "$LOG_FILE"
 chmod 666 "$LOG_FILE"
 
-# 4. Sincronización de Base de Datos
-echo "--- Sincronizando Base de Datos (Prisma) ---" | tee -a "$LOG_FILE"
+# 4. Sincronizacion de Base de Datos
+echo "--- Synchronizing Database (Prisma) ---" | tee -a "$LOG_FILE"
 PRISMA_SCHEMA=$(find . -name schema.prisma | head -n 1)
 if [ -z "$PRISMA_SCHEMA" ]; then
     PRISMA_SCHEMA=$(find /evolution -name schema.prisma | head -n 1)
 fi
 
 if [ -n "$PRISMA_SCHEMA" ]; then
-    echo "✅ Usando schema: $PRISMA_SCHEMA" | tee -a "$LOG_FILE"
+    echo "[INFO] Using schema: $PRISMA_SCHEMA" | tee -a "$LOG_FILE"
     timeout 60s npx prisma db push --schema="$PRISMA_SCHEMA" --accept-data-loss --skip-generate 2>&1 | tee -a "$LOG_FILE" || true
 else
-    echo "⚠️ No se encontro schema.prisma" | tee -a "$LOG_FILE"
+    echo "[WARN] No schema.prisma found" | tee -a "$LOG_FILE"
 fi
 
 # 5. Lanzar Evolution API
-echo "🚀 Iniciando Evolution API (API_KEY: Supera)" | tee -a "$LOG_FILE"
+echo "[INFO] Starting Evolution API (API_KEY: Supera)" | tee -a "$LOG_FILE"
 exec node "$REAL_MAIN" 2>&1 | tee -a "$LOG_FILE"
