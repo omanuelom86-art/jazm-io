@@ -5,21 +5,24 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const port = process.env.PORT || 8080;
 const distPath = path.join(__dirname, 'dist');
+// Railway provides the PORT environment variable. If not, fallback to 8080.
+const port = process.env.PORT || 8080;
 
 const server = http.createServer((req, res) => {
-    // Registro de peticiones para depuración en tiempo real
-    console.log(`[${new Date().toISOString()}] Request: ${req.url} - IP: ${req.socket.remoteAddress}`);
+    console.log(`[REQ] ${req.method} ${req.url}`);
 
+    // Railway Healthcheck
     if (req.url === '/health') {
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.end('OK');
         return;
     }
 
-    // Lógica de servidor estático para SPA
-    let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url);
+    // SPA Routing: Ignore query params for file lookup
+    const urlWithoutQuery = req.url.split('?')[0];
+    let filePath = path.join(distPath, urlWithoutQuery === '/' ? 'index.html' : urlWithoutQuery);
+
     if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
         filePath = path.join(distPath, 'index.html');
     }
@@ -48,7 +51,7 @@ const server = http.createServer((req, res) => {
             res.end(`Internal Server Error: ${error.code}`);
         } else {
             res.writeHead(200, { 'Content-Type': contentType });
-            res.end(content); // Remueve 'utf-8' para soportar binarios
+            res.end(content);
         }
     });
 });
@@ -56,24 +59,11 @@ const server = http.createServer((req, res) => {
 process.on('uncaughtException', (err) => {
     console.error('💥 Uncaught Exception:', err);
 });
-
 process.on('unhandledRejection', (reason, promise) => {
     console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
 server.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 NUCLEAR FAIL-SAFE SERVER LIVE ON PORT ${port}`);
-    console.log(`Checking Assets at: ${distPath}`);
-    if (fs.existsSync(distPath)) {
-        console.log('📂 Content of /dist:');
-        fs.readdirSync(distPath).forEach(file => console.log(`  - ${file}`));
-    } else {
-        console.error('❌ dist directory NOT FOUND!');
-    }
-
-    if (fs.existsSync(path.join(distPath, 'index.html'))) {
-        console.log('✅ dist/index.html found!');
-    } else {
-        console.error('❌ dist/index.html NOT FOUND!');
-    }
+    console.log(`🚀 STATIC SERVER LIVE ON PORT ${port}`);
+    console.log(`Assets Root: ${distPath}`);
 });
