@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [react()],
     build: {
         sourcemap: false,
-        minify: 'terser', // Terser can sometimes be more memory efficient or vice-versa, but let's try to reduce size
+        minify: 'esbuild',
         rollupOptions: {
             output: {
                 manualChunks: {
