@@ -28,7 +28,7 @@ const Page_9_2_notificaciones_y_alertas: React.FC = () => {
 <span className="text-sm text-on-surface-variant">Alerta inmediata cuando un prospecto entra al funnel.</span>
 </div>
 <label className="relative inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -39,7 +39,7 @@ const Page_9_2_notificaciones_y_alertas: React.FC = () => {
 <span className="text-sm text-on-surface-variant">Notificaciones de nuevos chats o respuestas pendientes.</span>
 </div>
 <label className="relative inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -74,7 +74,7 @@ const Page_9_2_notificaciones_y_alertas: React.FC = () => {
 <span className="text-sm text-on-surface-variant">Avisa si un agente IA no está convirtiendo como se esperaba.</span>
 </div>
 <label className="relative inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -84,7 +84,7 @@ const Page_9_2_notificaciones_y_alertas: React.FC = () => {
 <span className="text-sm text-on-surface-variant">Cuando la IA requiere ayuda manual con un lead complejo.</span>
 </div>
 <label className="relative inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -140,7 +140,7 @@ const Page_9_2_notificaciones_y_alertas: React.FC = () => {
 <div className="flex items-center gap-4">
 <div className="flex-1 text-sm font-medium">Recordatorios 15m antes</div>
 <label className="relative inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </div>
@@ -175,3 +175,5 @@ const Page_9_2_notificaciones_y_alertas: React.FC = () => {
 };
 
 export default Page_9_2_notificaciones_y_alertas;
+
+

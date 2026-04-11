@@ -168,3 +168,5 @@ const Page_configuraci_n_general: React.FC = () => {
 };
 
 export default Page_configuraci_n_general;
+
+

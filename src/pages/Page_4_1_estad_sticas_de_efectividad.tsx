@@ -113,7 +113,7 @@ const Page_4_1_estad_sticas_de_efectividad: React.FC = () => {
 <div className="w-full h-px bg-outline-variant/10"></div>
 </div>
 {/*  Decorative SVG Line  */}
-<svg className="absolute inset-0 h-full w-full pointer-events-none" preserveaspectratio="none" viewbox="0 0 800 250">
+<svg className="absolute inset-0 h-full w-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 800 250">
 <path d="M0,200 Q100,180 200,100 T400,120 T600,60 T800,80" fill="none" stroke="#006190" strokeWidth="3"></path>
 <path d="M0,220 Q150,215 300,210 T600,205 T800,200" fill="none" stroke="#c1c6d7" stroke-dasharray="8 4" strokeWidth="2"></path>
 </svg>
@@ -237,3 +237,5 @@ const Page_4_1_estad_sticas_de_efectividad: React.FC = () => {
 };
 
 export default Page_4_1_estad_sticas_de_efectividad;
+
+

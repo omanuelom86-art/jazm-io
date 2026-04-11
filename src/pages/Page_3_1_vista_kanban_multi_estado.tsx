@@ -199,3 +199,5 @@ const Page_3_1_vista_kanban_multi_estado: React.FC = () => {
 };
 
 export default Page_3_1_vista_kanban_multi_estado;
+
+

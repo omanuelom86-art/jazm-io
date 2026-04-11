@@ -113,7 +113,7 @@ const Page_11_2_soporte_t_cnico_directo: React.FC = () => {
 </div>
 <div>
 <label className="text-xs font-bold text-slate-500 mb-1.5 block">Descripción Detallada</label>
-<textarea className="w-full bg-surface-container-lowest border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 p-4 resize-none" placeholder="Cuéntanos más para ayudarte mejor..." rows="4"></textarea>
+<textarea className="w-full bg-surface-container-lowest border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 p-4 resize-none" placeholder="Cuéntanos más para ayudarte mejor..." rows={4}></textarea>
 </div>
 <button className="w-full bg-gradient-to-r from-primary to-primary-container text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 active:scale-95 transition-all" type="submit">
                             Enviar Requerimiento
@@ -158,3 +158,5 @@ const Page_11_2_soporte_t_cnico_directo: React.FC = () => {
 };
 
 export default Page_11_2_soporte_t_cnico_directo;
+
+

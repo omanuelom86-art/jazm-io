@@ -89,7 +89,7 @@ const Page_1_3_estad_sticas_de_conversi_n: React.FC = () => {
 </div>
 {/*  Line Chart Visual (Simplified SVG)  */}
 <div className="relative h-64 w-full flex items-end">
-<svg className="w-full h-full" preserveaspectratio="none" viewbox="0 0 400 100">
+<svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
 {/*  Previous Period Area  */}
 <path d="M0 80 Q 50 85 100 60 T 200 70 T 300 50 T 400 65" fill="none" stroke="#e2e8f0" strokeWidth="2"></path>
 {/*  Current Period Area  */}
@@ -226,3 +226,5 @@ const Page_1_3_estad_sticas_de_conversi_n: React.FC = () => {
 };
 
 export default Page_1_3_estad_sticas_de_conversi_n;
+
+

@@ -185,3 +185,5 @@ const Page_panel_s_per_administrador: React.FC = () => {
 };
 
 export default Page_panel_s_per_administrador;
+
+

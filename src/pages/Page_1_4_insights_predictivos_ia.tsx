@@ -127,3 +127,5 @@ const Page_1_4_insights_predictivos_ia: React.FC = () => {
 };
 
 export default Page_1_4_insights_predictivos_ia;
+
+

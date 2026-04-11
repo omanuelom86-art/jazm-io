@@ -26,7 +26,7 @@ const Page_7_3_auditor_a_de_actividad: React.FC = () => {
 </h3>
 <div className="relative aspect-square flex items-center justify-center mb-8">
 {/*  Custom SVG Donut Chart  */}
-<svg className="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
 <path className="text-surface-container-highest" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" strokeWidth="3"></path>
 <path className="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="45, 100" strokeLinecap="round" strokeWidth="4"></path>
 <path className="text-secondary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="30, 100" stroke-dashoffset="-45" strokeLinecap="round" strokeWidth="4"></path>
@@ -238,3 +238,5 @@ const Page_7_3_auditor_a_de_actividad: React.FC = () => {
 };
 
 export default Page_7_3_auditor_a_de_actividad;
+
+

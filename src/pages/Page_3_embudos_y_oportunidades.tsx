@@ -196,3 +196,5 @@ const Page_3_embudos_y_oportunidades: React.FC = () => {
 };
 
 export default Page_3_embudos_y_oportunidades;
+
+

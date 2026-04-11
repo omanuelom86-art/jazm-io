@@ -176,3 +176,5 @@ const Page_8_configuraci_n_del_widget: React.FC = () => {
 };
 
 export default Page_8_configuraci_n_del_widget;
+
+

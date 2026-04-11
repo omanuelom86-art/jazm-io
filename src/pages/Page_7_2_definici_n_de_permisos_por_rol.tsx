@@ -86,13 +86,13 @@ const Page_7_2_definici_n_de_permisos_por_rol: React.FC = () => {
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
@@ -118,19 +118,19 @@ const Page_7_2_definici_n_de_permisos_por_rol: React.FC = () => {
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
@@ -150,13 +150,13 @@ const Page_7_2_definici_n_de_permisos_por_rol: React.FC = () => {
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
@@ -182,13 +182,13 @@ const Page_7_2_definici_n_de_permisos_por_rol: React.FC = () => {
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
@@ -214,7 +214,7 @@ const Page_7_2_definici_n_de_permisos_por_rol: React.FC = () => {
 </td>
 <td className="px-8 py-6 text-center">
 <label className="inline-flex items-center cursor-pointer">
-<input checked="" className="sr-only peer" type="checkbox"/>
+<input defaultChecked className="sr-only peer" type="checkbox"/>
 <div className="relative w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
 </label>
 </td>
@@ -252,3 +252,5 @@ const Page_7_2_definici_n_de_permisos_por_rol: React.FC = () => {
 };
 
 export default Page_7_2_definici_n_de_permisos_por_rol;
+
+

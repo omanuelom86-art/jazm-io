@@ -207,3 +207,5 @@ const Page_2_configuraci_n_crm: React.FC = () => {
 };
 
 export default Page_2_configuraci_n_crm;
+
+

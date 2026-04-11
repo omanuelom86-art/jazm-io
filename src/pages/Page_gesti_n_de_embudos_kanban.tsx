@@ -196,3 +196,5 @@ const Page_gesti_n_de_embudos_kanban: React.FC = () => {
 };
 
 export default Page_gesti_n_de_embudos_kanban;
+
+
