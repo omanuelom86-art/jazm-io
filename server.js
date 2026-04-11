@@ -63,6 +63,17 @@ process.on('unhandledRejection', (reason, promise) => {
 
 server.listen(port, '0.0.0.0', () => {
     console.log(`🚀 NUCLEAR FAIL-SAFE SERVER LIVE ON PORT ${port}`);
-    console.log(`Assets Root: ${distPath}`);
-    console.log(`index.html ready: ${fs.existsSync(path.join(distPath, 'index.html'))}`);
+    console.log(`Checking Assets at: ${distPath}`);
+    if (fs.existsSync(distPath)) {
+        console.log('📂 Content of /dist:');
+        fs.readdirSync(distPath).forEach(file => console.log(`  - ${file}`));
+    } else {
+        console.error('❌ dist directory NOT FOUND!');
+    }
+
+    if (fs.existsSync(path.join(distPath, 'index.html'))) {
+        console.log('✅ dist/index.html found!');
+    } else {
+        console.error('❌ dist/index.html NOT FOUND!');
+    }
 });
