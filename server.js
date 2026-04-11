@@ -17,16 +17,27 @@ if (fs.existsSync(path.join(distPath, 'index.html'))) {
     console.error('❌ dist/index.html NOT FOUND!');
 }
 
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - IP: ${req.ip}`);
+    next();
+});
+
 app.use(express.static(distPath));
 
 app.get('/health', (req, res) => {
+    console.log('💓 Healthcheck request received');
     res.status(200).send('OK');
 });
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    res.sendFile(path.join(distPath, 'index.html'));
 });
 
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server is running on port ${port}`);
+const server = app.listen(port, '0.0.0.0', () => {
+    console.log(`🚀 Server LIVE on port ${port}`);
+    console.log(`Serving assets from: ${distPath}`);
+});
+
+server.on('error', (err) => {
+    console.error('❌ Server Error:', err);
 });
