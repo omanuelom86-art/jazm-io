@@ -63,7 +63,7 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
-server.listen(port, '0.0.0.0', () => {
-    console.log(`🚀 STATIC SERVER LIVE ON PORT ${port}`);
+server.listen(port, () => {
+    console.log(`🚀 STATIC SERVER LIVE ON PORT ${port} (IPv4+IPv6 Dual Stack)`);
     console.log(`Assets Root: ${distPath}`);
 });
