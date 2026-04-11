@@ -42,9 +42,9 @@ const Page_3_4_gesti_n_de_monedas_y_conversi_n: React.FC = () => {
                                         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                                             <span className="material-symbols-outlined text-outline">input</span>
                                         </div>
-                                        <select className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-xl appearance-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface transition-all">
+                                        <select defaultValue="MXN" className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-xl appearance-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface transition-all">
                                             <option value="USD">Dólar Estadounidense (USD)</option>
-                                            <option selected value="MXN">Peso Mexicano (MXN)</option>
+                                            <option value="MXN">Peso Mexicano (MXN)</option>
                                             <option value="EUR">Euro (EUR)</option>
                                             <option value="GBP">Libra Esterlina (GBP)</option>
                                         </select>
@@ -60,8 +60,8 @@ const Page_3_4_gesti_n_de_monedas_y_conversi_n: React.FC = () => {
                                         <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
                                             <span className="material-symbols-outlined text-outline">monitoring</span>
                                         </div>
-                                        <select className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-xl appearance-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface transition-all">
-                                            <option selected value="USD">Dólar Estadounidense (USD)</option>
+                                        <select defaultValue="USD" className="w-full pl-12 pr-4 py-4 bg-surface-container-high border-none rounded-xl appearance-none focus:ring-2 focus:ring-primary/40 font-medium text-on-surface transition-all">
+                                            <option value="USD">Dólar Estadounidense (USD)</option>
                                             <option value="MXN">Peso Mexicano (MXN)</option>
                                             <option value="EUR">Euro (EUR)</option>
                                         </select>

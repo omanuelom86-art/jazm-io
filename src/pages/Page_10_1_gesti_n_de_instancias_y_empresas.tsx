@@ -183,7 +183,7 @@ const Page_10_1_gesti_n_de_instancias_y_empresas: React.FC = () => {
                 <div className="mt-12 flex items-center justify-between">
                     <p className="text-sm text-on-surface-variant font-medium">Mostrando 1-10 de 24 instancias totales</p>
                     <div className="flex items-center gap-2">
-                        <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors disabled:opacity-30" disabled>
+                        <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container-high text-on-surface hover:bg-surface-container-highest transition-colors disabled:opacity-30" disabled={true}>
                             <span className="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
                         </button>
                         <button className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary text-white font-bold">1</button>

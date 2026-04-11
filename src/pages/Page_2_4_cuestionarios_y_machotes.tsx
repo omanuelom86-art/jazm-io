@@ -73,7 +73,7 @@ const Page_2_4_cuestionarios_y_machotes: React.FC = () => {
                                 <span className="material-symbols-outlined text-primary text-sm">sync_alt</span>
                                 <div className="text-right">
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Machote DOCX</p>
-                                    <p className="text-xs font-medium text-tertiary">{"{{company_name}}"}</p>
+                                    <p className="text-xs font-medium text-tertiary">{"\u007B\u007Bcompany_name\u007D\u007D"}</p>
                                 </div>
                             </div>
                             <div className="bg-surface-container-low p-3 rounded-lg flex items-center justify-between">
@@ -84,7 +84,7 @@ const Page_2_4_cuestionarios_y_machotes: React.FC = () => {
                                 <span className="material-symbols-outlined text-primary text-sm">sync_alt</span>
                                 <div className="text-right">
                                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Machote DOCX</p>
-                                    <p className="text-xs font-medium text-tertiary">{"{{tax_id}}"}</p>
+                                    <p className="text-xs font-medium text-tertiary">{"\u007B\u007Btax_id\u007D\u007D"}</p>
                                 </div>
                             </div>
                         </div>
@@ -123,7 +123,7 @@ const Page_2_4_cuestionarios_y_machotes: React.FC = () => {
                                 </div>
                                 <div className="py-4 px-3 bg-primary/5 rounded border border-primary/20 flex flex-col gap-2">
                                     <p className="text-[10px] font-bold text-primary tracking-widest uppercase">Campo Dinámico Detectado</p>
-                                    <p className="text-sm font-medium italic text-primary-container">{"\"En la ciudad de {{ciudad_firma}}, a los {{dia_firma}} días del mes...\""}</p>
+                                    <p className="text-sm font-medium italic text-primary-container">{"\"En la ciudad de \u007B\u007Bciudad_firma\u007D\u007D, a los \u007B\u007Bdia_firma\u007D\u007D días del mes...\""}</p>
                                 </div>
                                 <div className="space-y-3">
                                     <div className="h-3 bg-slate-50 rounded w-full"></div>
