@@ -1,0 +1,252 @@
+[
+  {
+    "folder": "1.1_resumen_de_metas",
+    "component": "Page_1_1_resumen_de_metas",
+    "path": "11_resumen_de_metas"
+  },
+  {
+    "folder": "1.2_an_lisis_de_embudo",
+    "component": "Page_1_2_an_lisis_de_embudo",
+    "path": "12_an_lisis_de_embudo"
+  },
+  {
+    "folder": "1.3_estad_sticas_de_conversi_n",
+    "component": "Page_1_3_estad_sticas_de_conversi_n",
+    "path": "13_estad_sticas_de_conversi_n"
+  },
+  {
+    "folder": "1.4_insights_predictivos_ia",
+    "component": "Page_1_4_insights_predictivos_ia",
+    "path": "14_insights_predictivos_ia"
+  },
+  {
+    "folder": "1._dashboard_ia",
+    "component": "Page_1_dashboard_ia",
+    "path": "1_dashboard_ia"
+  },
+  {
+    "folder": "10.1_gesti_n_de_instancias_y_empresas",
+    "component": "Page_10_1_gesti_n_de_instancias_y_empresas",
+    "path": "101_gesti_n_de_instancias_y_empresas"
+  },
+  {
+    "folder": "10.2_monitoreo_de_consumo_de_ia",
+    "component": "Page_10_2_monitoreo_de_consumo_de_ia",
+    "path": "102_monitoreo_de_consumo_de_ia"
+  },
+  {
+    "folder": "10.3_reportes_de_ingresos_y_gastos",
+    "component": "Page_10_3_reportes_de_ingresos_y_gastos",
+    "path": "103_reportes_de_ingresos_y_gastos"
+  },
+  {
+    "folder": "10.4_soporte_y_acceso_directo",
+    "component": "Page_10_4_soporte_y_acceso_directo",
+    "path": "104_soporte_y_acceso_directo"
+  },
+  {
+    "folder": "11.1_documentaci_n_y_tutoriales",
+    "component": "Page_11_1_documentaci_n_y_tutoriales",
+    "path": "111_documentaci_n_y_tutoriales"
+  },
+  {
+    "folder": "11.2_soporte_t_cnico_directo",
+    "component": "Page_11_2_soporte_t_cnico_directo",
+    "path": "112_soporte_t_cnico_directo"
+  },
+  {
+    "folder": "2.1_constructor_de_embudos_y_etapas",
+    "component": "Page_2_1_constructor_de_embudos_y_etapas",
+    "path": "21_constructor_de_embudos_y_etapas"
+  },
+  {
+    "folder": "2.2_gesti_n_de_fichas_y_expedientes",
+    "component": "Page_2_2_gesti_n_de_fichas_y_expedientes",
+    "path": "22_gesti_n_de_fichas_y_expedientes"
+  },
+  {
+    "folder": "2.3_campos_y_etiquetas",
+    "component": "Page_2_3_campos_y_etiquetas",
+    "path": "23_campos_y_etiquetas"
+  },
+  {
+    "folder": "2.4_cuestionarios_y_machotes",
+    "component": "Page_2_4_cuestionarios_y_machotes",
+    "path": "24_cuestionarios_y_machotes"
+  },
+  {
+    "folder": "2._configuraci_n_crm",
+    "component": "Page_2_configuraci_n_crm",
+    "path": "2_configuraci_n_crm"
+  },
+  {
+    "folder": "3.1_vista_kanban_multi_estado",
+    "component": "Page_3_1_vista_kanban_multi_estado",
+    "path": "31_vista_kanban_multi_estado"
+  },
+  {
+    "folder": "3.2_filtros_avanzados_y_segmentaci_n",
+    "component": "Page_3_2_filtros_avanzados_y_segmentaci_n",
+    "path": "32_filtros_avanzados_y_segmentaci_n"
+  },
+  {
+    "folder": "3.3_cat_logo_de_productos_e_inventarios",
+    "component": "Page_3_3_cat_logo_de_productos_e_inventarios",
+    "path": "33_cat_logo_de_productos_e_inventarios"
+  },
+  {
+    "folder": "3.4_gesti_n_de_monedas_y_conversi_n",
+    "component": "Page_3_4_gesti_n_de_monedas_y_conversi_n",
+    "path": "34_gesti_n_de_monedas_y_conversi_n"
+  },
+  {
+    "folder": "3._embudos_y_oportunidades",
+    "component": "Page_3_embudos_y_oportunidades",
+    "path": "3_embudos_y_oportunidades"
+  },
+  {
+    "folder": "4.1_estad_sticas_de_efectividad",
+    "component": "Page_4_1_estad_sticas_de_efectividad",
+    "path": "41_estad_sticas_de_efectividad"
+  },
+  {
+    "folder": "4.2_registro_de_conversaciones",
+    "component": "Page_4_2_registro_de_conversaciones",
+    "path": "42_registro_de_conversaciones"
+  },
+  {
+    "folder": "4.3_an_lisis_de_sentimiento",
+    "component": "Page_4_3_an_lisis_de_sentimiento",
+    "path": "43_an_lisis_de_sentimiento"
+  },
+  {
+    "folder": "5.1_selecci_n_de_perfil_de_empleado",
+    "component": "Page_5_1_selecci_n_de_perfil_de_empleado",
+    "path": "51_selecci_n_de_perfil_de_empleado"
+  },
+  {
+    "folder": "5.2_personalizaci_n_de_caracter_sticas",
+    "component": "Page_5_2_personalizaci_n_de_caracter_sticas",
+    "path": "52_personalizaci_n_de_caracter_sticas"
+  },
+  {
+    "folder": "5.3_medici_n_de_kpi_por_empleado_ia",
+    "component": "Page_5_3_medici_n_de_kpi_por_empleado_ia",
+    "path": "53_medici_n_de_kpi_por_empleado_ia"
+  },
+  {
+    "folder": "6.1_integraci_n_de_whatsapp_web",
+    "component": "Page_6_1_integraci_n_de_whatsapp_web",
+    "path": "61_integraci_n_de_whatsapp_web"
+  },
+  {
+    "folder": "6.2_panel_de_redes_sociales",
+    "component": "Page_6_2_panel_de_redes_sociales",
+    "path": "62_panel_de_redes_sociales"
+  },
+  {
+    "folder": "6.3_reglas_de_ia_para_chats",
+    "component": "Page_6_3_reglas_de_ia_para_chats",
+    "path": "63_reglas_de_ia_para_chats"
+  },
+  {
+    "folder": "7.1_administraci_n_de_usuarios_humanos",
+    "component": "Page_7_1_administraci_n_de_usuarios_humanos",
+    "path": "71_administraci_n_de_usuarios_humanos"
+  },
+  {
+    "folder": "7.2_definici_n_de_permisos_por_rol",
+    "component": "Page_7_2_definici_n_de_permisos_por_rol",
+    "path": "72_definici_n_de_permisos_por_rol"
+  },
+  {
+    "folder": "7.3_auditor_a_de_actividad",
+    "component": "Page_7_3_auditor_a_de_actividad",
+    "path": "73_auditor_a_de_actividad"
+  },
+  {
+    "folder": "8.1_configuraci_n_de_widget",
+    "component": "Page_8_1_configuraci_n_de_widget",
+    "path": "81_configuraci_n_de_widget"
+  },
+  {
+    "folder": "8.2_personalizaci_n_visual",
+    "component": "Page_8_2_personalizaci_n_visual",
+    "path": "82_personalizaci_n_visual"
+  },
+  {
+    "folder": "8._configuraci_n_del_widget",
+    "component": "Page_8_configuraci_n_del_widget",
+    "path": "8_configuraci_n_del_widget"
+  },
+  {
+    "folder": "9.1_preferencias_de_empresa",
+    "component": "Page_9_1_preferencias_de_empresa",
+    "path": "91_preferencias_de_empresa"
+  },
+  {
+    "folder": "9.2_notificaciones_y_alertas",
+    "component": "Page_9_2_notificaciones_y_alertas",
+    "path": "92_notificaciones_y_alertas"
+  },
+  {
+    "folder": "9.3_integraciones_api_y_webhooks",
+    "component": "Page_9_3_integraciones_api_y_webhooks",
+    "path": "93_integraciones_api_y_webhooks"
+  },
+  {
+    "folder": "ayuda_y_soporte",
+    "component": "Page_ayuda_y_soporte",
+    "path": "ayuda_y_soporte"
+  },
+  {
+    "folder": "conexi_n_de_redes_y_whatsapp",
+    "component": "Page_conexi_n_de_redes_y_whatsapp",
+    "path": "conexi_n_de_redes_y_whatsapp"
+  },
+  {
+    "folder": "configuraci_n_crm",
+    "component": "Page_configuraci_n_crm",
+    "path": "configuraci_n_crm"
+  },
+  {
+    "folder": "configuraci_n_general",
+    "component": "Page_configuraci_n_general",
+    "path": "configuraci_n_general"
+  },
+  {
+    "folder": "dashboard_ia",
+    "component": "Page_dashboard_ia",
+    "path": "dashboard_ia"
+  },
+  {
+    "folder": "estad_sticas_de_agentes_ia",
+    "component": "Page_estad_sticas_de_agentes_ia",
+    "path": "estad_sticas_de_agentes_ia"
+  },
+  {
+    "folder": "gesti_n_de_embudos_kanban",
+    "component": "Page_gesti_n_de_embudos_kanban",
+    "path": "gesti_n_de_embudos_kanban"
+  },
+  {
+    "folder": "gesti_n_de_empleados_virtuales",
+    "component": "Page_gesti_n_de_empleados_virtuales",
+    "path": "gesti_n_de_empleados_virtuales"
+  },
+  {
+    "folder": "gesti_n_de_equipos_y_roles",
+    "component": "Page_gesti_n_de_equipos_y_roles",
+    "path": "gesti_n_de_equipos_y_roles"
+  },
+  {
+    "folder": "jazm.io_ingreso",
+    "component": "Page_jazm_io_ingreso",
+    "path": "jazmio_ingreso"
+  },
+  {
+    "folder": "panel_s_per_administrador",
+    "component": "Page_panel_s_per_administrador",
+    "path": "panel_s_per_administrador"
+  }
+]
