@@ -48,9 +48,17 @@ const server = http.createServer((req, res) => {
             res.end(`Internal Server Error: ${error.code}`);
         } else {
             res.writeHead(200, { 'Content-Type': contentType });
-            res.end(content, 'utf-8');
+            res.end(content); // Remueve 'utf-8' para soportar binarios
         }
     });
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('💥 Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
 });
 
 server.listen(port, '0.0.0.0', () => {
