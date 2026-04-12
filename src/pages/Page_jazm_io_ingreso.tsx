@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const Page_jazm_io_ingreso: React.FC = () => {
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulación de login exitoso
-        navigate('/1_dashboard_ia');
+        setErrorMsg('');
+        setLoading(true);
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+            setErrorMsg(error.message);
+            setLoading(false);
+        } else {
+            navigate('/1_dashboard_ia');
+        }
     };
 
     return (
@@ -61,11 +73,13 @@ const Page_jazm_io_ingreso: React.FC = () => {
                     <div className="bg-surface-container-lowest p-8 rounded-[2rem] shadow-2xl shadow-sky-900/5 flex flex-col gap-6">
                         <form className="flex flex-col gap-5" onSubmit={handleLogin}>
                             {/* Username Field */}
+                            {errorMsg && <div className="text-error text-sm font-semibold bg-error-container p-3 rounded-lg text-center">{errorMsg}</div>}
+
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-xs font-semibold text-on-surface-variant ml-1 uppercase tracking-wider" htmlFor="username">Usuario o Correo</label>
                                 <div className="relative group">
                                     <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-xl transition-colors group-focus-within:text-primary" data-icon="person">person</span>
-                                    <input className="w-full bg-surface-container-high border-none rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" id="username" placeholder="nombre@ejemplo.com" type="text" />
+                                    <input value={email} onChange={e => setEmail(e.target.value)} required className="w-full bg-surface-container-high border-none rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" id="username" placeholder="nombre@ejemplo.com" type="email" />
                                 </div>
                             </div>
 
@@ -76,7 +90,7 @@ const Page_jazm_io_ingreso: React.FC = () => {
                                 </div>
                                 <div className="relative group">
                                     <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-xl transition-colors group-focus-within:text-primary" data-icon="lock">lock</span>
-                                    <input className="w-full bg-surface-container-high border-none rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" id="password" placeholder="••••••••" type="password" />
+                                    <input value={password} onChange={e => setPassword(e.target.value)} required className="w-full bg-surface-container-high border-none rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary/40 transition-all text-on-surface placeholder:text-outline-variant" id="password" placeholder="••••••••" type="password" />
                                     <button className="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-outline transition-colors" type="button">
                                         <span className="material-symbols-outlined" data-icon="visibility">visibility</span>
                                     </button>
@@ -89,13 +103,13 @@ const Page_jazm_io_ingreso: React.FC = () => {
                                     <input className="rounded-md border-outline-variant text-primary focus:ring-primary" type="checkbox" />
                                     <span>Recordarme</span>
                                 </label>
-                                <a className="text-primary font-medium hover:underline transition-all underline-offset-4" href="#">¿Olvidaste tu contraseña?</a>
+                                <a className="text-primary font-medium hover:underline transition-all underline-offset-4 cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/recuperar_password'); }}>¿Olvidaste tu contraseña?</a>
                             </div>
 
                             {/* Primary CTA */}
-                            <button className="mt-4 bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.01] active:scale-[0.98] transition-all flex justify-center items-center gap-3" type="submit">
-                                <span>Iniciar Sesión</span>
-                                <span className="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+                            <button disabled={loading} className="mt-4 disabled:opacity-50 bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 hover:scale-[1.01] active:scale-[0.98] transition-all flex justify-center items-center gap-3" type="submit">
+                                <span>{loading ? 'Autenticando...' : 'Iniciar Sesión'}</span>
+                                {!loading && <span className="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>}
                             </button>
                         </form>
 
@@ -107,11 +121,11 @@ const Page_jazm_io_ingreso: React.FC = () => {
                                 <div className="h-[1px] flex-1 bg-surface-container-high"></div>
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                                <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface font-medium text-sm">
+                                <button type="button" onClick={() => navigate('/1_dashboard_ia')} className="flex items-center justify-center gap-2 py-3 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface font-medium text-sm">
                                     <img alt="Google" className="w-5 h-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzyl05Ped9nkgoEAHH1lUbtYRJsG9PfxsHQ1EIcm-TeqPDazHClRyCjAvjEjSQ-ov_9WtZBCbzExcNGgqJ2vsAI9T5-5xPVlBYA3GY1qCNN2S_VEBpIglxkkBqT68r_wGTjab4F0KoiIfuGGUXxMFFSqE_iqCYmTC5KgpmX90MkJkgmXO0hzNcdJrqKmYbktYh81vPEgBGEWs88I7gZ2MD_ROAB2i7PpkQavxqEsdB9_XQt9kDkDPft6fOfyzDats2-QuGVXwutFk4" />
                                     Google
                                 </button>
-                                <button className="flex items-center justify-center gap-2 py-3 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface font-medium text-sm">
+                                <button type="button" onClick={() => navigate('/1_dashboard_ia')} className="flex items-center justify-center gap-2 py-3 rounded-xl bg-surface-container-low hover:bg-surface-container-high transition-colors text-on-surface font-medium text-sm">
                                     <span className="material-symbols-outlined text-xl" data-icon="apple">ios</span>
                                     Apple
                                 </button>
@@ -121,7 +135,7 @@ const Page_jazm_io_ingreso: React.FC = () => {
 
                     {/* Footer Link */}
                     <p className="text-center md:text-left text-on-surface-variant text-sm">
-                        ¿No tienes una cuenta? <a className="text-primary font-bold hover:underline underline-offset-4" href="#">Regístrate gratis</a>
+                        ¿No tienes una cuenta? <a className="text-primary font-bold hover:underline underline-offset-4 cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/registro'); }}>Regístrate gratis</a>
                     </p>
                 </section>
             </main>

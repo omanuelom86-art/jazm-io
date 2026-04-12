@@ -15,6 +15,8 @@ const PageLoader = () => (
 
 // Páginas Públicas
 const Page_jazm_io_ingreso = lazy(() => import('./pages/Page_jazm_io_ingreso'));
+const Page_registro = lazy(() => import('./pages/Page_registro'));
+const Page_recuperar_password = lazy(() => import('./pages/Page_recuperar_password'));
 
 // Páginas del Dashboard (Lazy Loading)
 const Page_1_1_resumen_de_metas = lazy(() => import('./pages/Page_1_1_resumen_de_metas'));
@@ -68,6 +70,8 @@ const App: React.FC = () => {
                 <Routes>
                     {/* Ruta de Login (Sin Sidebar) */}
                     <Route path="/jazmio_ingreso" element={<Page_jazm_io_ingreso />} />
+                    <Route path="/registro" element={<Page_registro />} />
+                    <Route path="/recuperar_password" element={<Page_recuperar_password />} />
 
                     {/* Rutas Protegidas (Con Sidebar e Isla Dinámica) */}
                     <Route element={<DashboardLayout />}>

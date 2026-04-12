@@ -1,6 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+
+type Connection = {
+    id: string;
+    channel: string;
+    identifier: string;
+    status: string;
+    agent_assigned_id: string;
+    ai_agents?: { name: string; avatar_icon: string };
+};
 
 const Page_conexi_n_de_redes_y_whatsapp: React.FC = () => {
+    const [connections, setConnections] = useState<Connection[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchConnections();
+    }, []);
+
+    const fetchConnections = async () => {
+        setLoading(true);
+        const { data, error } = await supabase.from('whatsapp_connections').select(`
+            *,
+            ai_agents (name, avatar_icon)
+        `);
+        if (data) setConnections(data);
+        setLoading(false);
+    };
+
+    const handleConnect = async (channel: string) => {
+        const ident = prompt(`Ingresa tu cuenta para ${channel} (Ej. +34 600... / @cuenta):`);
+        if (!ident) return;
+        const { data: userResponse } = await supabase.auth.getUser();
+        if (!userResponse.user) {
+            alert('Debes iniciar sesión real primero.');
+            return;
+        }
+
+        const { error } = await supabase.from('whatsapp_connections').insert([{
+            channel,
+            identifier: ident,
+            status: 'Conectado',
+            user_id: userResponse.user.id
+        }]);
+
+        if (error) alert('Error: ' + error.message);
+        else fetchConnections();
+    };
     return (
         <div className="w-full">
 
@@ -30,7 +76,7 @@ const Page_conexi_n_de_redes_y_whatsapp: React.FC = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <button className="text-primary font-bold text-sm hover:underline">Gestionar Dispositivo</button>
+                                <button onClick={() => handleConnect('WhatsApp')} className="text-primary font-bold text-sm hover:underline">Vincular Nueva Línea</button>
                             </div>
                             <div className="bg-surface-container-highest/30 rounded-2xl p-6 mb-6">
                                 <p className="text-sm font-medium text-slate-600 mb-4 uppercase tracking-tighter">Estado de la conexión</p>
@@ -42,9 +88,9 @@ const Page_conexi_n_de_redes_y_whatsapp: React.FC = () => {
                             </div>
                         </div>
                         <div className="flex gap-4">
-                            <button className="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20">
+                            <button onClick={fetchConnections} className="bg-primary text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20">
                                 <span className="material-symbols-outlined">sync</span>
-                                Refrescar WhatsApp Web
+                                {loading ? 'Sincronizando...' : 'Refrescar Servidor'}
                             </button>
                         </div>
                         {/*  Decorative Abstract Graph  */}
@@ -58,7 +104,7 @@ const Page_conexi_n_de_redes_y_whatsapp: React.FC = () => {
                     <div className="md:col-span-5 bg-surface-container rounded-3xl p-8 flex flex-col">
                         <h3 className="text-xl font-bold mb-6">Conectar Redes Meta</h3>
                         <div className="space-y-4">
-                            <div className="flex items-center justify-between p-4 bg-white/50 rounded-2xl hover:bg-white transition-colors cursor-pointer group">
+                            <div onClick={() => handleConnect('Facebook')} className="flex items-center justify-between p-4 bg-white/50 rounded-2xl hover:bg-white transition-colors cursor-pointer group">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-blue-600/10 rounded-xl flex items-center justify-center">
                                         <svg className="w-6 h-6 fill-blue-600" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"></path></svg>
@@ -70,7 +116,7 @@ const Page_conexi_n_de_redes_y_whatsapp: React.FC = () => {
                                 </div>
                                 <span className="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity">add_circle</span>
                             </div>
-                            <div className="flex items-center justify-between p-4 bg-white/50 rounded-2xl hover:bg-white transition-colors cursor-pointer group">
+                            <div onClick={() => handleConnect('Instagram')} className="flex items-center justify-between p-4 bg-white/50 rounded-2xl hover:bg-white transition-colors cursor-pointer group">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-pink-600/10 rounded-xl flex items-center justify-center">
                                         <svg className="w-6 h-6 fill-pink-600" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"></path></svg>
@@ -112,58 +158,37 @@ const Page_conexi_n_de_redes_y_whatsapp: React.FC = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-surface-container-low">
-                                    {/*  Row 1  */}
-                                    <tr className="group">
-                                        <td className="py-6 px-2">
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-8 h-8 rounded-lg bg-[#25D366]/20 flex items-center justify-center">
-                                                    <svg className="w-4 h-4 fill-[#25D366]" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.431 5.63 1.432h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>
-                                                </span>
-                                                <span className="font-semibold">WhatsApp</span>
-                                            </div>
-                                        </td>
-                                        <td className="py-6 px-2 text-slate-500 font-medium">+34 600 000 000</td>
-                                        <td className="py-6 px-2">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
-                                                    <img className="w-full h-full object-cover" data-alt="Cybernetic humanoid portrait with soft blue neon lighting in a minimalist digital environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE_MI1xbJcDYHkElzrFypoq0V5iJOWzRmspSRvi7QuKszDH-z4d4n7ZKeYQHibaB7V25dnO9njyMISljxxR6F7aTUZOCjCGO9LMm8GQI7FF3k5Oa1WDTNHNPn6k8gI_rZRKK1Hho-lxtCQGPnOWPON1sTQs4tnNNq4JvC11D_eOmwTHGoulDfeQIRZfc3ZuD2iZiknSH5697tH8LEyrm5JAJrTYNbq0Dv36gIfT7fLaXRXa68FBlkAPBnDgH4UxhKquHvbK9dwivX3" />
+                                    {loading ? <tr><td colSpan={5} className="py-6 text-center animate-pulse">Cargando conexiones...</td></tr> : null}
+                                    {connections.map(conn => (
+                                        <tr key={conn.id} className="group">
+                                            <td className="py-6 px-2">
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`w-8 h-8 rounded-lg flex items-center justify-center ${conn.channel === 'WhatsApp' ? 'bg-[#25D366]/20' : (conn.channel === 'Instagram' ? 'bg-pink-600/20' : 'bg-blue-600/20')}`}>
+                                                        <span className={`material-symbols-outlined text-sm font-bold ${conn.channel === 'WhatsApp' ? 'text-[#25D366]' : (conn.channel === 'Instagram' ? 'text-pink-600' : 'text-blue-600')}`}>forum</span>
+                                                    </span>
+                                                    <span className="font-semibold">{conn.channel}</span>
                                                 </div>
-                                                <span className="font-bold">Agente "Ventas"</span>
-                                            </div>
-                                        </td>
-                                        <td className="py-6 px-2">
-                                            <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs font-bold uppercase tracking-tight">Full Autopilot</span>
-                                        </td>
-                                        <td className="py-6 px-2 text-right">
-                                            <button className="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">edit</button>
-                                        </td>
-                                    </tr>
-                                    {/*  Row 2  */}
-                                    <tr className="group">
-                                        <td className="py-6 px-2">
-                                            <div className="flex items-center gap-2">
-                                                <span className="w-8 h-8 rounded-lg bg-pink-600/20 flex items-center justify-center">
-                                                    <svg className="w-4 h-4 fill-pink-600" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069z"></path></svg>
-                                                </span>
-                                                <span className="font-semibold">Instagram</span>
-                                            </div>
-                                        </td>
-                                        <td className="py-6 px-2 text-slate-500 font-medium">@mi_tienda_oficial</td>
-                                        <td className="py-6 px-2">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
-                                                    <img className="w-full h-full object-cover" data-alt="Abstract 3D digital head representation with flowing gold and silver lines against a clean white studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8QgsZK3BvTYcFB3GI7BdWZcnZ1nOTtXZjFwp69xK1NnO20qdKVMqEYEXHxNmtk672J-qDEWtHnhAY2OHiNqSb-5E9o96Nth8U5tMzXnXuKc4t4wp6OQs4HeaY8euS6X8Nr7n2B5TDE-a3pOMe-bPeYqUIMq_mtvxkg02Zh74MwFVYWmCZDHO6Kj0lsg80oVe86EZxvbrCYW5HUX-HZsTtJqX7mexMYmgZsKDPDHVgJcIaR3aNjUlX8nmdMwPtoa4-faC6701f8S4P" />
-                                                </div>
-                                                <span className="font-bold">Agente "Soporte"</span>
-                                            </div>
-                                        </td>
-                                        <td className="py-6 px-2">
-                                            <span className="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-xs font-bold uppercase tracking-tight">Híbrido</span>
-                                        </td>
-                                        <td className="py-6 px-2 text-right">
-                                            <button className="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">edit</button>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td className="py-6 px-2 text-slate-500 font-medium">{conn.identifier}</td>
+                                            <td className="py-6 px-2">
+                                                {conn.agent_assigned_id ? (
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center">
+                                                            <span className="material-symbols-outlined text-sm">smart_toy</span>
+                                                        </div>
+                                                        <span className="font-bold">{conn.ai_agents?.name || 'Agente'}</span>
+                                                    </div>
+                                                ) : <span className="text-xs text-outline">Sin Agente</span>}
+                                            </td>
+                                            <td className="py-6 px-2">
+                                                <span className="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs font-bold uppercase tracking-tight">{conn.status}</span>
+                                            </td>
+                                            <td className="py-6 px-2 text-right">
+                                                <button onClick={() => alert('Falta crear la vista de Asignar. En proceso.')} className="material-symbols-outlined text-slate-400 hover:text-primary transition-colors">link</button>
+                                                <button onClick={async () => { await supabase.from('whatsapp_connections').delete().eq('id', conn.id); fetchConnections(); }} className="material-symbols-outlined ml-2 text-slate-400 hover:text-error transition-colors">delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
